@@ -1,6 +1,6 @@
-# Day 0 — What is Programming?
+# BASICS · 01 — What is Programming?
 
-**Stage:** 00 — Programming Basics
+**Category:** BASICS
 **Topic:** What is Programming?
 **Date:** 29 August 2026
 
@@ -130,4 +130,4 @@ cpp-from-zero-to-advanced/
 
 ---
 
-**Next topic:** Day 1 — What is a Program?
+**Next topic:** BASICS · 02 — What is a Program?
