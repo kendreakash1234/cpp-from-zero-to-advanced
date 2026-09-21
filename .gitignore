@@ -68,3 +68,11 @@ vcpkg_installed/
 Testing/
 .cache/
 main
+
+# build artifacts
+main
+main.exe
+*.i
+*.s
+*.o
+*.out
