@@ -35,14 +35,16 @@
 *.lib
 
 # Executables
+main
+mystery_*
 *.exe
 *.out
-*.app
 
 # Build directories
 build/
 Build/
 build-*/
+cmake-build-*/
 
 # CMake generated files
 CMakeFiles/
@@ -76,3 +78,14 @@ main.exe
 *.s
 *.o
 *.out
+
+# Compiler intermediate files
+*.i
+*.ii
+*.s
+*.o
+*.obj
+
+# OS files
+.DS_Store
+Thumbs.db
