@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage 00 — Programming Basics · C++ From Zero to Advanced</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f6f8fa;
+  --border: #d1d9e0;
+  --text: #1f2328;
+  --muted: #59636e;
+  --blue: #0969da;
+  --green: #1a7f37;
+  --red: #cf222e;
+  --amber: #9a6700;
+  --purple: #8250df;
+  --blue-bg: #ddf4ff;
+  --green-bg: #dafbe1;
+  --red-bg: #ffebe9;
+  --amber-bg: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #9198a1;
+    --blue: #58a6ff; --green: #3fb950; --red: #ff7b72; --amber: #e3b341; --purple: #d2a8ff;
+    --blue-bg: #0c2d6b40; --green-bg: #0f3a1f66; --red-bg: #4a121566; --amber-bg: #3d2e0066;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #9198a1;
+  --blue: #58a6ff; --green: #3fb950; --red: #ff7b72; --amber: #e3b341; --purple: #d2a8ff;
+  --blue-bg: #0c2d6b40; --green-bg: #0f3a1f66; --red-bg: #4a121566; --amber-bg: #3d2e0066;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 17px; line-height: 1.65;
+}
+a { color: var(--blue); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--border); background: var(--surface);
+  padding: 28px 20px 40px;
+}
+.toc .brand { font-weight: 700; font-size: 15px; line-height: 1.3; margin: 0 0 4px; }
+.toc .stage { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.toc h2 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 20px 0 6px; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li a {
+  display: grid; grid-template-columns: 30px 1fr; gap: 4px;
+  padding: 5px 8px; border-radius: 6px; text-decoration: none; color: var(--text); font-size: 14.5px; line-height: 1.4;
+}
+.toc li a span { font-family: var(--mono); color: var(--muted); font-size: 13px; padding-top: 1px; }
+.toc li a:hover { background: var(--bg); }
+.toc .extra a { grid-template-columns: 1fr; }
+.theme-btn {
+  margin-top: 24px; font: inherit; font-size: 14px; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; cursor: pointer;
+}
+
+main { padding: 48px 56px 96px; max-width: 900px; }
+header.hero h1 { font-size: 44px; line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.5px; }
+header.hero .series { font-family: var(--mono); color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+header.hero p.lead { font-size: 19px; color: var(--muted); margin: 0 0 28px; max-width: 68ch; }
+
+section.topic { border-top: 1px solid var(--border); padding-top: 40px; margin-top: 56px; }
+section.topic > h2 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; display: flex; gap: 14px; align-items: baseline; }
+section.topic > h2 .num { font-family: var(--mono); color: var(--blue); font-size: 20px; font-weight: 600; }
+.folder { font-family: var(--mono); font-size: 13px; color: var(--muted); margin: 0 0 20px; }
+h3 { font-size: 19px; margin: 28px 0 8px; }
+p, ul, ol { max-width: 72ch; }
+li { margin: 4px 0; }
+code { font-family: var(--mono); font-size: 0.9em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+pre {
+  font-family: var(--mono); font-size: 14.5px; line-height: 1.55;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px 18px; overflow-x: auto; margin: 12px 0 18px;
+}
+pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+.cpp-label { font-size: 13px; color: var(--muted); margin: 14px 0 -6px; }
+
+.definition {
+  font-size: 20px; line-height: 1.5; font-weight: 500; margin: 8px 0 18px; padding: 16px 20px;
+  background: var(--blue-bg); border-radius: 8px; max-width: 72ch;
+}
+.callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; max-width: 72ch; }
+.callout p { margin: 4px 0; }
+.callout strong.kind { display: block; margin-bottom: 2px; }
+.callout.model { background: var(--green-bg); }
+.callout.model strong.kind { color: var(--green); }
+.callout.mistake { background: var(--red-bg); }
+.callout.mistake strong.kind { color: var(--red); }
+.callout.myth { background: var(--amber-bg); }
+.callout.myth strong.kind { color: var(--amber); }
+
+table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 15.5px; }
+.table-wrap { overflow-x: auto; }
+th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 8px 12px; vertical-align: top; }
+th { background: var(--surface); font-weight: 600; }
+td code { white-space: nowrap; }
+
+.revision { border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-top: 24px; }
+.revision h3 { margin: 0 0 6px; font-size: 16px; color: var(--muted); }
+.revision ul { margin: 0; padding-left: 20px; }
+
+.phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 8px 0 12px; }
+.phase { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--surface); }
+.phase h3 { margin: 0 0 6px; font-size: 15px; }
+.phase ol { margin: 0; padding-left: 0; list-style: none; font-size: 14px; }
+.phase li { margin: 2px 0; }
+.phase li span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+details { border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; margin: 8px 0; max-width: 72ch; }
+summary { cursor: pointer; font-weight: 500; }
+details p { margin: 8px 0 4px; color: var(--text); }
+
+
+.fig { margin: 14px 0 20px; padding: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
+svg.dg { display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; font-family: var(--sans); }
+.dg .shape, .ico .shape { fill: var(--bg); stroke: var(--muted); stroke-width: 1.5; }
+.dg .shape.accent, .ico .shape.accent { stroke: var(--blue); stroke-width: 2; }
+.dg text { fill: var(--text); font-size: 14px; }
+.dg text.code { font-family: var(--mono); font-size: 14px; }
+.dg text.lab { fill: var(--muted); font-size: 13px; }
+.dg text.lab.ok { fill: var(--green); } .dg text.lab.bad { fill: var(--red); }
+.dg text.head-t { font-weight: 600; font-size: 15px; }
+.dg .edge, .ico .edge { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+.dg .head, .ico .head { fill: var(--muted); }
+.ico { width: 46px; height: 23px; vertical-align: middle; margin-right: 10px; }
+td.shape-cell { white-space: nowrap; }
+.flow { display: flex; margin: 14px 0 20px; gap: 0; }
+.flow.h { flex-direction: row; align-items: stretch; overflow-x: auto; padding-bottom: 4px; }
+.flow.v { flex-direction: column; align-items: flex-start; max-width: 520px; }
+.flow .step { display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); min-width: 140px; }
+.flow.v .step { width: 100%; }
+.flow .step strong { font-weight: 600; font-size: 15.5px; }
+.flow .step span { font-size: 14px; color: var(--muted); }
+.flow .step.accent { border-color: var(--blue); }
+.flow .step.ok { border-color: var(--green); }
+.flow .step.warn { border-color: var(--amber); }
+.flow .arr { color: var(--muted); font-size: 20px; line-height: 1; align-self: center; padding: 6px 10px; }
+.flow.v .arr { align-self: flex-start; padding: 4px 0 4px 24px; }
+ol.method { list-style: none; counter-reset: m; padding: 0; margin: 14px 0 20px; max-width: 72ch; }
+ol.method li { counter-increment: m; display: grid; grid-template-columns: 36px 120px 1fr; align-items: baseline; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); margin: 0; }
+ol.method li::before { content: counter(m); font-family: var(--mono); color: var(--blue); font-weight: 600; }
+ol.method li span { color: var(--muted); }
+@media (max-width: 560px) { ol.method li { grid-template-columns: 28px 1fr; } ol.method li span { grid-column: 2; } }
+
+footer { margin-top: 72px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); padding-top: 20px; }
+
+@media (max-width: 980px) {
+  .layout { grid-template-columns: 1fr; }
+  nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+  main { padding: 32px 20px 64px; }
+  .phases { grid-template-columns: repeat(2, 1fr); }
+  header.hero h1 { font-size: 34px; }
+}
+@media (max-width: 560px) { .phases { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Stage contents">
+  <p class="brand">C++ From Zero to Advanced</p>
+  <p class="stage">Stage 00 — Programming Basics</p>
+
+  <h2>Foundations</h2>
+  <ol>
+    <li><a href="#t01"><span>01</span>What is programming?</a></li>
+    <li><a href="#t02"><span>02</span>What is a program?</a></li>
+    <li><a href="#t03"><span>03</span>What is an algorithm?</a></li>
+    <li><a href="#t04"><span>04</span>Input → Processing → Output</a></li>
+  </ol>
+  <h2>Building blocks</h2>
+  <ol>
+    <li><a href="#t05"><span>05</span>Variables as stored state</a></li>
+    <li><a href="#t06"><span>06</span>Data and operations</a></li>
+    <li><a href="#t07"><span>07</span>Expressions</a></li>
+    <li><a href="#t08"><span>08</span>Statements</a></li>
+  </ol>
+  <h2>Controlling the flow</h2>
+  <ol>
+    <li><a href="#t09"><span>09</span>Conditions</a></li>
+    <li><a href="#t10"><span>10</span>Repetition</a></li>
+    <li><a href="#t11"><span>11</span>Functions as reusable logic</a></li>
+  </ol>
+  <h2>Designing solutions</h2>
+  <ol>
+    <li><a href="#t12"><span>12</span>Decomposition</a></li>
+    <li><a href="#t13"><span>13</span>Pseudocode</a></li>
+    <li><a href="#t14"><span>14</span>Flowcharts and program flow</a></li>
+    <li><a href="#t15"><span>15</span>Problem-solving review</a></li>
+  </ol>
+  <h2>Revise</h2>
+  <ol class="extra">
+    <li><a href="#summary">Stage summary</a></li>
+    <li><a href="#selftest">Self-test</a></li>
+  </ol>
+
+  <button class="theme-btn" type="button" id="themeBtn">Switch theme</button>
+</nav>
+
+<main>
+<header class="hero">
+  <p class="series">C++ From Zero to Advanced · Stage 00</p>
+  <h1>Programming Basics</h1>
+  <p class="lead">How to turn a problem into a precise, step-by-step solution before writing any C++ syntax. Everything in later stages builds on the ideas in this page.</p>
+
+  <div class="phases">
+    <div class="phase"><h3>Foundations</h3><ol><li><span>01</span>Programming</li><li><span>02</span>Program</li><li><span>03</span>Algorithm</li><li><span>04</span>Input → Output</li></ol></div>
+    <div class="phase"><h3>Building blocks</h3><ol><li><span>05</span>Variables</li><li><span>06</span>Data &amp; operations</li><li><span>07</span>Expressions</li><li><span>08</span>Statements</li></ol></div>
+    <div class="phase"><h3>Controlling the flow</h3><ol><li><span>09</span>Conditions</li><li><span>10</span>Repetition</li><li><span>11</span>Functions</li></ol></div>
+    <div class="phase"><h3>Designing solutions</h3><ol><li><span>12</span>Decomposition</li><li><span>13</span>Pseudocode</li><li><span>14</span>Flowcharts</li><li><span>15</span>Review</li></ol></div>
+  </div>
+</header>
+
+<!-- ============================================================ 01 -->
+<section class="topic" id="t01">
+  <h2><span class="num">01</span>What is programming?</h2>
+  <p class="folder">00-programming-basics/01-what-is-programming</p>
+
+  <p class="definition">Programming is the process of solving a problem by designing a precise sequence of instructions and expressing it in a language a computer can execute.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>A computer is extremely fast and extremely literal. It can perform billions of simple operations per second, but it has no understanding of what you want. Programming is how a person turns an intention ("calculate the average mark") into steps so exact that a machine can carry them out without guessing.</p>
+
+  <h3>How does it work?</h3>
+  <p>Writing code is only one part of programming. The full activity looks like this:</p>
+<div class="flow v" role="img" aria-label="Programming process: understand, design, write, build, test and debug, maintain"><div class="step "><strong>Understand the problem</strong></div><div class="arr" aria-hidden="true">↓</div><div class="step "><strong>Design a solution</strong><span>the algorithm</span></div><div class="arr" aria-hidden="true">↓</div><div class="step "><strong>Write the code</strong></div><div class="arr" aria-hidden="true">↓</div><div class="step "><strong>Build and run</strong></div><div class="arr" aria-hidden="true">↓</div><div class="step warn"><strong>Test</strong><span>wrong result → debug, then back to writing the code</span></div><div class="arr" aria-hidden="true">↓</div><div class="step ok"><strong>Maintain and improve</strong></div></div>
+  <p>Most of the real work happens in the first two steps and in testing. Typing code is usually the smallest part.</p>
+
+  <div class="callout model">
+    <strong class="kind">Mental model</strong>
+    <p>Programming is like writing a recipe for a cook who follows every word exactly and never uses common sense. "Add some salt" fails; "add 5 grams of salt" works.</p>
+  </div>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Starting to type code before understanding the problem. The result is code that solves the wrong problem, or that has to be rewritten.</p>
+  </div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"Programming means memorising syntax." Syntax is the easy, searchable part. The hard, valuable part is thinking clearly: breaking a problem down, choosing steps, and checking that the steps are correct.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Programming = problem solving + expressing the solution precisely.</li>
+      <li>Computers do exactly what they are told, not what you meant.</li>
+      <li>Understand → design → code → test → debug → maintain.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 02 -->
+<section class="topic" id="t02">
+  <h2><span class="num">02</span>What is a program?</h2>
+  <p class="folder">00-programming-basics/02-what-is-a-program</p>
+
+  <p class="definition">A program is a set of instructions, together with the data they work on, that a computer can execute to perform a task.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>Programming is the activity; a program is its result. Once written, a program can be run again and again, by anyone, without the programmer being present.</p>
+
+  <h3>How does it work?</h3>
+  <p>People write programs as <strong>source code</strong>: human-readable text. A processor cannot run text directly; it runs <strong>machine code</strong>. In C++, a compiler and related tools translate the source into an <strong>executable</strong>. When the executable is started, the operating system loads it and it runs.</p>
+<div class="flow h" role="img" aria-label="Source code is translated into an executable, which the operating system runs"><div class="step "><strong>Source code</strong><span>main.cpp · text</span></div><div class="arr" aria-hidden="true">→</div><div class="step "><strong>Translate</strong><span>compiler and linker</span></div><div class="arr" aria-hidden="true">→</div><div class="step "><strong>Executable</strong><span>machine code</span></div><div class="arr" aria-hidden="true">→</div><div class="step ok"><strong>Run</strong><span>the OS loads it</span></div></div>
+  <p>The detailed translation steps (preprocessing, compilation, assembly, linking) are covered in Stage 01, topic 03.</p>
+
+  <h3>Key terminology</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Term</th><th>Meaning</th></tr>
+    <tr><td>Source code</td><td>The program as text written by a person, such as <code>main.cpp</code>.</td></tr>
+    <tr><td>Executable</td><td>The translated file the computer can run.</td></tr>
+    <tr><td>Input</td><td>Data the program receives, for example from the keyboard or a file.</td></tr>
+    <tr><td>Output</td><td>Results the program produces, for example text on the screen.</td></tr>
+  </table></div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"The <code>.cpp</code> file is the program the computer runs." The <code>.cpp</code> file is source code. The computer runs the executable produced from it. Changing the source has no effect until you build again.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>A program = instructions + data, executable by a computer.</li>
+      <li>Source code (text) is translated into an executable (machine code).</li>
+      <li>Edit source → rebuild → run. The old executable does not change by itself.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 03 -->
+<section class="topic" id="t03">
+  <h2><span class="num">03</span>What is an algorithm?</h2>
+  <p class="folder">00-programming-basics/03-what-is-an-algorithm</p>
+
+  <p class="definition">An algorithm is a finite sequence of well-defined steps that takes some input and produces a correct output for a problem.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>An algorithm separates <em>what steps solve the problem</em> from <em>how they are written in a particular language</em>. The same algorithm can be written in C++, Python, or on paper. Getting the algorithm right first means the code only has to express a solution that is already correct.</p>
+
+  <h3>Properties of an algorithm</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Property</th><th>Meaning</th></tr>
+    <tr><td>Input</td><td>It takes zero or more inputs.</td></tr>
+    <tr><td>Output</td><td>It produces at least one result.</td></tr>
+    <tr><td>Definiteness</td><td>Every step is precise and unambiguous.</td></tr>
+    <tr><td>Finiteness</td><td>It always finishes after a finite number of steps.</td></tr>
+    <tr><td>Effectiveness</td><td>Every step is simple enough to actually be carried out.</td></tr>
+  </table></div>
+
+  <h3>Example: largest of three numbers</h3>
+<pre>
+1. Read a, b, c
+2. Set largest to a
+3. If b is greater than largest, set largest to b
+4. If c is greater than largest, set largest to c
+5. Output largest
+</pre>
+  <p>Every step is definite, there is no loop that could run forever, and it works for any three numbers, including equal ones.</p>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Vague steps such as "find the biggest one." A person can guess what that means; a computer cannot. Each step must say exactly what to compare and what to store.</p>
+  </div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"An algorithm and a program are the same thing." An algorithm is the language-independent idea. A program is one implementation of it in a specific language.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Algorithm = finite, precise steps from input to correct output.</li>
+      <li>Five properties: input, output, definiteness, finiteness, effectiveness.</li>
+      <li>Design the algorithm first; then express it in code.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 04 -->
+<section class="topic" id="t04">
+  <h2><span class="num">04</span>Input → Processing → Output</h2>
+  <p class="folder">00-programming-basics/04-input-processing-output</p>
+
+  <p class="definition">The IPO model describes a program as three parts: the data it receives (input), the work it does on that data (processing), and the results it produces (output).</p>
+
+  <h3>Why does it exist?</h3>
+  <p>Before designing any solution, you need to know what you are given and what you must produce. The IPO model forces those two questions first, and the processing is whatever connects them.</p>
+
+<div class="flow h" role="img" aria-label="Input, processing, output for the area of a rectangle"><div class="step "><strong>Input</strong><span>width = 5, height = 3</span></div><div class="arr" aria-hidden="true">→</div><div class="step accent"><strong>Processing</strong><span>area = width × height</span></div><div class="arr" aria-hidden="true">→</div><div class="step ok"><strong>Output</strong><span>area = 15</span></div></div>
+
+  <h3>Example: area of a rectangle</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Part</th><th>Content</th></tr>
+    <tr><td>Input</td><td>width, height</td></tr>
+    <tr><td>Processing</td><td>area = width × height</td></tr>
+    <tr><td>Output</td><td>area</td></tr>
+  </table></div>
+
+  <p class="cpp-label">How it looks in C++ (preview; syntax is taught in Stage 01)</p>
+<pre><code>int width{};
+int height{};
+std::cin &gt;&gt; width &gt;&gt; height;         // input
+int area{width * height};           // processing
+std::cout &lt;&lt; "Area: " &lt;&lt; area &lt;&lt; '\n';  // output</code></pre>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Assuming input is always valid. Real input can be missing, negative, or not a number at all. Deciding what to do with invalid input is part of processing.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Ask first: what do I receive, and what must I produce?</li>
+      <li>Processing is the transformation from input to output.</li>
+      <li>Invalid input must be handled, not ignored.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 05 -->
+<section class="topic" id="t05">
+  <h2><span class="num">05</span>Variables as stored state</h2>
+  <p class="folder">00-programming-basics/05-variables-and-state</p>
+
+  <p class="definition">A variable is a named place that holds a value the program can read and change. The state of a program is the set of values held by all its variables at a given moment.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>Programs work in steps, and later steps need results from earlier ones. Variables remember those results. As the program runs, the values change, and following those changes is how you understand what a program does.</p>
+
+  <h3>Tracing state: swapping two values</h3>
+  <p>To swap <code>a</code> and <code>b</code>, you need a third variable, because assigning directly would overwrite a value before it is saved.</p>
+<pre>
+1. Set temp to a
+2. Set a to b
+3. Set b to temp
+</pre>
+  <div class="table-wrap"><table>
+    <tr><th>After step</th><th>a</th><th>b</th><th>temp</th></tr>
+    <tr><td>Start</td><td>4</td><td>9</td><td>—</td></tr>
+    <tr><td>1</td><td>4</td><td>9</td><td>4</td></tr>
+    <tr><td>2</td><td>9</td><td>9</td><td>4</td></tr>
+    <tr><td>3</td><td>9</td><td>4</td><td>4</td></tr>
+  </table></div>
+  <p>A table like this is called a <strong>trace table</strong>. It is one of the most useful tools for checking an algorithm by hand.</p>
+
+  <div class="callout model">
+    <strong class="kind">Mental model</strong>
+    <p>A variable is a labelled box holding one value at a time. Putting a new value in replaces the old one; the old value is gone unless you saved it somewhere else.</p>
+  </div>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Swapping with just <code>a = b</code> then <code>b = a</code>. After the first step both hold the value of <code>b</code>, and the original <code>a</code> is lost.</p>
+  </div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"A variable holds its whole history." It holds only its current value. State is a snapshot, which is why tracing it step by step matters.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Variable = named storage for a value that can change.</li>
+      <li>State = all variable values at one moment.</li>
+      <li>Trace tables make state changes visible.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 06 -->
+<section class="topic" id="t06">
+  <h2><span class="num">06</span>Data and operations</h2>
+  <p class="folder">00-programming-basics/06-data-and-operations</p>
+
+  <p class="definition">Data is the information a program works with. Operations are the actions that can be performed on that data. Which operations make sense depends on the kind of data.</p>
+
+  <h3>Kinds of data</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Kind</th><th>Examples</th><th>Typical operations</th></tr>
+    <tr><td>Whole numbers</td><td>7, −3, 1000</td><td>add, subtract, multiply, divide, compare</td></tr>
+    <tr><td>Fractional numbers</td><td>3.14, −0.5</td><td>arithmetic, compare</td></tr>
+    <tr><td>Text</td><td>"Akash", "hello"</td><td>join, measure length, compare</td></tr>
+    <tr><td>True/false</td><td>true, false</td><td>and, or, not</td></tr>
+  </table></div>
+  <p>In C++, each kind of data has a <strong>type</strong>. Types are covered in Stage 01, topics 11–13.</p>
+
+  <h3>Kinds of operations</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Category</th><th>Operators (conceptual)</th><th>Result</th></tr>
+    <tr><td>Arithmetic</td><td>+ − × ÷ remainder</td><td>a number</td></tr>
+    <tr><td>Comparison</td><td>= ≠ &lt; ≤ &gt; ≥</td><td>true or false</td></tr>
+    <tr><td>Logical</td><td>and, or, not</td><td>true or false</td></tr>
+  </table></div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"<code>"5"</code> and <code>5</code> are the same." One is text, the other is a number. Joining text <code>"5"</code> and <code>"3"</code> gives <code>"53"</code>; adding numbers 5 and 3 gives 8. The kind of data decides the meaning of the operation.</p>
+  </div>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Assuming division always gives a fractional result. In many languages, including C++, dividing two whole numbers discards the fractional part: 7 ÷ 2 gives 3. You will see this in Stage 01, topic 18.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Data has kinds: whole, fractional, text, true/false.</li>
+      <li>Arithmetic gives numbers; comparison and logic give true/false.</li>
+      <li>The kind of data decides which operations are valid.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 07 -->
+<section class="topic" id="t07">
+  <h2><span class="num">07</span>Expressions</h2>
+  <p class="folder">00-programming-basics/07-expressions</p>
+
+  <p class="definition">An expression is a combination of values, variables, and operators that is evaluated to produce a single value.</p>
+
+  <h3>How does it work?</h3>
+  <p>An expression is evaluated according to operator <strong>precedence</strong> (which operator is applied first) and, when needed, parentheses. Multiplication and division are applied before addition and subtraction.</p>
+<figure class="fig"><svg class="dg" viewBox="0 0 540 250" style="max-width:540px" role="img" aria-label="Expression trees: 2 + 3 × 4 evaluates to 14; (2 + 3) × 4 evaluates to 20"><title>Expression trees: 2 + 3 × 4 evaluates to 14; (2 + 3) × 4 evaluates to 20</title><defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><line x1="130" y1="54" x2="75" y2="84" class="edge"/><line x1="130" y1="54" x2="185" y2="84" class="edge"/><line x1="185" y1="124" x2="145" y2="154" class="edge"/><line x1="185" y1="124" x2="225" y2="154" class="edge"/><circle cx="130" cy="34" r="20" class="shape"/><text x="130" y="34" text-anchor="middle" dominant-baseline="middle" class="code">+</text><circle cx="75" cy="104" r="20" class="shape"/><text x="75" y="104" text-anchor="middle" dominant-baseline="middle" class="code">2</text><circle cx="185" cy="104" r="20" class="shape"/><text x="185" y="104" text-anchor="middle" dominant-baseline="middle" class="code">×</text><circle cx="145" cy="174" r="20" class="shape"/><text x="145" y="174" text-anchor="middle" dominant-baseline="middle" class="code">3</text><circle cx="225" cy="174" r="20" class="shape"/><text x="225" y="174" text-anchor="middle" dominant-baseline="middle" class="code">4</text><text x="130" y="226" text-anchor="middle" dominant-baseline="middle" class="code">2 + 3 × 4 = 14</text><line x1="410" y1="54" x2="355" y2="84" class="edge"/><line x1="410" y1="54" x2="465" y2="84" class="edge"/><line x1="355" y1="124" x2="315" y2="154" class="edge"/><line x1="355" y1="124" x2="395" y2="154" class="edge"/><circle cx="410" cy="34" r="20" class="shape"/><text x="410" y="34" text-anchor="middle" dominant-baseline="middle" class="code">×</text><circle cx="355" cy="104" r="20" class="shape"/><text x="355" y="104" text-anchor="middle" dominant-baseline="middle" class="code">+</text><circle cx="465" cy="104" r="20" class="shape"/><text x="465" y="104" text-anchor="middle" dominant-baseline="middle" class="code">4</text><circle cx="315" cy="174" r="20" class="shape"/><text x="315" y="174" text-anchor="middle" dominant-baseline="middle" class="code">2</text><circle cx="395" cy="174" r="20" class="shape"/><text x="395" y="174" text-anchor="middle" dominant-baseline="middle" class="code">3</text><text x="410" y="226" text-anchor="middle" dominant-baseline="middle" class="code">(2 + 3) × 4 = 20</text><text x="270" y="120" text-anchor="middle" dominant-baseline="middle" class="lab">vs</text></svg></figure>
+  <p>The tree shows the order: the deepest operation is evaluated first.</p>
+
+  <h3>Examples</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Expression</th><th>Value (width = 5, height = 3)</th><th>Kind of result</th></tr>
+    <tr><td><code>width * height</code></td><td>15</td><td>number</td></tr>
+    <tr><td><code>width &gt; height</code></td><td>true</td><td>true/false</td></tr>
+    <tr><td><code>(width + height) * 2</code></td><td>16</td><td>number</td></tr>
+  </table></div>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Writing <code>a + b / 2</code> for an average. Division happens first, so this computes <code>a + (b / 2)</code>. The average needs parentheses: <code>(a + b) / 2</code>.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>An expression always produces a value.</li>
+      <li>Precedence decides the order; parentheses override it.</li>
+      <li>When in doubt, add parentheses for clarity.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 08 -->
+<section class="topic" id="t08">
+  <h2><span class="num">08</span>Statements</h2>
+  <p class="folder">00-programming-basics/08-statements</p>
+
+  <p class="definition">A statement is a complete instruction that performs an action. Programs are sequences of statements, executed one after another unless the flow is changed.</p>
+
+  <h3>Expression vs statement</h3>
+  <div class="table-wrap"><table>
+    <tr><th></th><th>Expression</th><th>Statement</th></tr>
+    <tr><td>Purpose</td><td>Produces a value</td><td>Performs an action</td></tr>
+    <tr><td>Example</td><td><code>width * height</code></td><td><code>area = width * height</code></td></tr>
+    <tr><td>Analogy</td><td>A phrase</td><td>A complete sentence</td></tr>
+  </table></div>
+  <p>A statement often <em>contains</em> expressions. In <code>area = width * height</code>, the expression <code>width * height</code> is evaluated, and the statement stores the result.</p>
+
+  <h3>Sequential execution</h3>
+<div class="flow h" role="img" aria-label="Statements run one after another"><div class="step "><strong>Statement 1</strong><span>read input</span></div><div class="arr" aria-hidden="true">→</div><div class="step "><strong>Statement 2</strong><span>calculate</span></div><div class="arr" aria-hidden="true">→</div><div class="step "><strong>Statement 3</strong><span>show result</span></div></div>
+  <p>Order matters. Printing the area before calculating it prints the wrong value.</p>
+  <p>In C++, most statements end with a semicolon <code>;</code>. That is covered from Stage 01 onward.</p>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Putting statements in the wrong order, for example using a value before the statement that produces it.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Expression produces a value; statement performs an action.</li>
+      <li>Statements run top to bottom by default.</li>
+      <li>Order is part of correctness.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 09 -->
+<section class="topic" id="t09">
+  <h2><span class="num">09</span>Conditions</h2>
+  <p class="folder">00-programming-basics/09-conditions</p>
+
+  <p class="definition">A condition is a true/false question that lets a program choose between different paths.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>Without conditions, a program does the same thing every time. Conditions let it react to its input: a valid or invalid value, a pass or a fail, a positive or a negative number.</p>
+
+<figure class="fig"><svg class="dg" viewBox="0 0 540 220" style="max-width:540px" role="img" aria-label="Decision: if number % 2 == 0 output even, otherwise output odd"><title>Decision: if number % 2 == 0 output even, otherwise output odd</title><defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><polygon points="270,18.0 395.0,60 270,102.0 145.0,60" class="shape accent"/><text x="270" y="60" text-anchor="middle" dominant-baseline="middle" class="code">number % 2 == 0 ?</text><path d="M145 60 H100 V148" class="edge" marker-end="url(#ah2)"/><path d="M395 60 H440 V148" class="edge" marker-end="url(#ah2)"/><text x="118" y="44" text-anchor="middle" dominant-baseline="middle" class="lab ok">true</text><text x="420" y="44" text-anchor="middle" dominant-baseline="middle" class="lab bad">false</text><polygon points="29.0,151.0 185.0,151.0 171.0,205.0 15.0,205.0" class="shape "/><text x="100" y="178" text-anchor="middle" dominant-baseline="middle">Output &quot;even&quot;</text><polygon points="369.0,151.0 525.0,151.0 511.0,205.0 355.0,205.0" class="shape "/><text x="440" y="178" text-anchor="middle" dominant-baseline="middle">Output &quot;odd&quot;</text></svg></figure>
+
+  <h3>Structure</h3>
+<pre>
+IF condition THEN
+    steps when true
+ELSE
+    steps when false
+END IF
+</pre>
+
+  <h3>Example: grade classification</h3>
+<pre>
+IF marks ≥ 75 THEN      output "Distinction"
+ELSE IF marks ≥ 40 THEN output "Pass"
+ELSE                    output "Fail"
+END IF
+</pre>
+  <p>The checks run in order, and the first true one wins. That is why the highest threshold is checked first.</p>
+
+  <p class="cpp-label">How it looks in C++ (preview; taught in Stage 02)</p>
+<pre><code>if (number % 2 == 0) {
+    std::cout &lt;&lt; "even\n";
+} else {
+    std::cout &lt;&lt; "odd\n";
+}</code></pre>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Boundary errors: using <code>&gt;</code> where the rule says "75 or more" (<code>≥</code>). Always test the exact boundary values, such as 74, 75, 39, and 40.</p>
+  </div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"All conditions are checked." In an if / else-if chain, checking stops at the first true condition. Order changes the result.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Condition = true/false question that selects a path.</li>
+      <li>In a chain, the first true branch runs; the rest are skipped.</li>
+      <li>Test boundary values on both sides.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 10 -->
+<section class="topic" id="t10">
+  <h2><span class="num">10</span>Repetition</h2>
+  <p class="folder">00-programming-basics/10-repetitions</p>
+
+  <p class="definition">Repetition (a loop) runs the same steps multiple times, either a known number of times or while a condition stays true.</p>
+
+  <h3>Two kinds of loops</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Kind</th><th>When to use</th><th>Example</th></tr>
+    <tr><td>Counter-controlled</td><td>You know how many times</td><td>Print the numbers 1 to 10</td></tr>
+    <tr><td>Condition-controlled</td><td>You repeat until something happens</td><td>Ask again until the input is valid</td></tr>
+  </table></div>
+
+  <h3>The four parts of a loop</h3>
+<figure class="fig"><svg class="dg" viewBox="0 0 520 360" style="max-width:520px" role="img" aria-label="Loop: initialise, check i ≤ n, run body, update, and repeat until the check is false"><title>Loop: initialise, check i ≤ n, run body, update, and repeat until the check is false</title><defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><rect x="45.0" y="17.0" width="170" height="46" rx="6" class="shape "/><text x="130" y="40" text-anchor="middle" dominant-baseline="middle" class="code">i = 1, sum = 0</text><path d="M130 63 V96" class="edge" marker-end="url(#ah3)"/><polygon points="130,100.0 220.0,140 130,180.0 40.0,140" class="shape accent"/><text x="130" y="140" text-anchor="middle" dominant-baseline="middle" class="code">i ≤ n ?</text><path d="M130 180 V214" class="edge" marker-end="url(#ah3)"/><text x="146" y="198" text-anchor="start" dominant-baseline="middle" class="lab ok">true</text><rect x="30.0" y="217.0" width="200" height="46" rx="6" class="shape "/><text x="130" y="240" text-anchor="middle" dominant-baseline="middle" class="code">sum = sum + i</text><path d="M130 263 V296" class="edge" marker-end="url(#ah3)"/><rect x="30.0" y="297.0" width="200" height="46" rx="6" class="shape "/><text x="130" y="320" text-anchor="middle" dominant-baseline="middle" class="code">i = i + 1</text><path d="M30 320 H18 V140 H38" class="edge" marker-end="url(#ah3)"/><path d="M220 140 H330" class="edge" marker-end="url(#ah3)"/><text x="275" y="124" text-anchor="middle" dominant-baseline="middle" class="lab bad">false</text><rect x="335.0" y="115.0" width="150" height="50" rx="25.0" class="shape"/><text x="410" y="140" text-anchor="middle" dominant-baseline="middle">exit loop</text><text x="225" y="40" text-anchor="start" dominant-baseline="middle" class="lab">initialise</text><text x="250" y="240" text-anchor="start" dominant-baseline="middle" class="lab">body</text><text x="250" y="320" text-anchor="start" dominant-baseline="middle" class="lab">update</text><text x="170" y="104" text-anchor="start" dominant-baseline="middle" class="lab">check</text></svg></figure>
+
+  <h3>Trace: sum of 1 to 4</h3>
+  <div class="table-wrap"><table>
+    <tr><th>i</th><th>i ≤ 4?</th><th>sum after body</th></tr>
+    <tr><td>1</td><td>true</td><td>1</td></tr>
+    <tr><td>2</td><td>true</td><td>3</td></tr>
+    <tr><td>3</td><td>true</td><td>6</td></tr>
+    <tr><td>4</td><td>true</td><td>10</td></tr>
+    <tr><td>5</td><td>false</td><td>loop ends, sum = 10</td></tr>
+  </table></div>
+
+  <p class="cpp-label">How it looks in C++ (preview; taught in Stage 02)</p>
+<pre><code>int sum{};
+for (int i{1}; i &lt;= n; ++i) {
+    sum += i;
+}</code></pre>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake: infinite loop</strong>
+    <p>Forgetting the update step, so the condition never becomes false.</p>
+  </div>
+  <div class="callout mistake">
+    <strong class="kind">Common mistake: off-by-one</strong>
+    <p>Running one time too many or too few, usually from <code>&lt;</code> versus <code>≤</code>. Trace the first and last iterations to check.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Loop = repeated steps, by count or by condition.</li>
+      <li>Four parts: initialise, check, body, update.</li>
+      <li>Check the first and last iteration for off-by-one errors.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 11 -->
+<section class="topic" id="t11">
+  <h2><span class="num">11</span>Functions as reusable logic</h2>
+  <p class="folder">00-programming-basics/11-function-as-reusable-logic</p>
+
+  <p class="definition">A function is a named, reusable block of steps that can receive inputs (parameters) and give back a result (return value).</p>
+
+  <h3>Why does it exist?</h3>
+  <p>When the same steps are needed in several places, copying them creates duplicated code that must be fixed in many places when something changes. A function writes the steps once and gives them a name that explains their purpose.</p>
+
+<div class="flow h" role="img" aria-label="A function receives inputs and returns a result"><div class="step "><strong>Inputs</strong><span>width = 5, height = 3</span></div><div class="arr" aria-hidden="true">→</div><div class="step accent"><strong>area(width, height)</strong><span>return width × height</span></div><div class="arr" aria-hidden="true">→</div><div class="step ok"><strong>Result</strong><span>15</span></div></div>
+
+  <p class="cpp-label">How it looks in C++ (preview; taught in Stage 03)</p>
+<pre><code>int area(int width, int height)
+{
+    return width * height;
+}</code></pre>
+
+  <div class="callout model">
+    <strong class="kind">Mental model</strong>
+    <p>A function is a black box with a clear label: you know what goes in and what comes out, without needing to see inside.</p>
+  </div>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>One function doing everything: reading input, calculating, and printing. A function that only calculates is easier to test and reuse.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Function = named, reusable steps with inputs and a result.</li>
+      <li>Removes duplication and gives logic a meaningful name.</li>
+      <li>One function, one job.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 12 -->
+<section class="topic" id="t12">
+  <h2><span class="num">12</span>Breaking a problem into smaller problems</h2>
+  <p class="folder">00-programming-basics/12-decomposition</p>
+
+  <p class="definition">Decomposition is splitting a large problem into smaller subproblems, each simple enough to solve on its own, so that combining the solutions solves the whole problem.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>Large problems are hard to hold in your head at once. Smaller pieces can be understood, written, and tested separately. Each piece often becomes a function.</p>
+
+  <h3>Example: student grade report</h3>
+<figure class="fig"><svg class="dg" viewBox="0 0 760 200" style="max-width:760px" role="img" aria-label="Decomposition: grade report splits into read marks, calculate average, decide grade, print report"><title>Decomposition: grade report splits into read marks, calculate average, decide grade, print report</title><defs><marker id="ah4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><rect x="240.0" y="11.0" width="280" height="50" rx="6" class="shape accent"/><text x="380" y="36" text-anchor="middle" dominant-baseline="middle">Produce a grade report</text><path d="M380 61 V92" class="edge"/><path d="M100 92 H660" class="edge"/><path d="M100 92 V122" class="edge" marker-end="url(#ah4)"/><rect x="20" y="124" width="160" height="62" rx="6" class="shape"/><text x="100" y="146" text-anchor="middle" dominant-baseline="middle">Read marks</text><text x="100" y="168" text-anchor="middle" dominant-baseline="middle" class="lab">(validate input)</text><path d="M287 92 V122" class="edge" marker-end="url(#ah4)"/><rect x="207" y="124" width="160" height="62" rx="6" class="shape"/><text x="287" y="146" text-anchor="middle" dominant-baseline="middle">Calculate</text><text x="287" y="168" text-anchor="middle" dominant-baseline="middle" class="lab">average</text><path d="M473 92 V122" class="edge" marker-end="url(#ah4)"/><rect x="393" y="124" width="160" height="62" rx="6" class="shape"/><text x="473" y="146" text-anchor="middle" dominant-baseline="middle">Decide grade</text><text x="473" y="168" text-anchor="middle" dominant-baseline="middle" class="lab">from average</text><path d="M660 92 V122" class="edge" marker-end="url(#ah4)"/><rect x="580" y="124" width="160" height="62" rx="6" class="shape"/><text x="660" y="146" text-anchor="middle" dominant-baseline="middle">Print</text><text x="660" y="168" text-anchor="middle" dominant-baseline="middle" class="lab">report</text></svg></figure>
+  <p>This is <strong>top-down design</strong>, also called <strong>stepwise refinement</strong>: start with the whole task, then keep breaking each step down until every step is simple and clear.</p>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Splitting too little (one giant block) or too much (tiny pieces that do not mean anything on their own). A good subproblem has one clear purpose and a name you can explain.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Decomposition = big problem → smaller, solvable subproblems.</li>
+      <li>Top-down: refine each step until it is simple.</li>
+      <li>Subproblems often become functions.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 13 -->
+<section class="topic" id="t13">
+  <h2><span class="num">13</span>Pseudocode</h2>
+  <p class="folder">00-programming-basics/13-pseudocode</p>
+
+  <p class="definition">Pseudocode is a structured, plain-language description of an algorithm, written to be precise for people without following the syntax of any real programming language.</p>
+
+  <h3>Why does it exist?</h3>
+  <p>It lets you design and check logic without being distracted by syntax. Pseudocode is quick to write, easy to discuss, and translates almost line by line into code.</p>
+
+  <h3>Common conventions</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Keyword</th><th>Meaning</th></tr>
+    <tr><td><code>INPUT</code> / <code>OUTPUT</code></td><td>Receive or display data</td></tr>
+    <tr><td><code>SET x TO value</code></td><td>Store a value</td></tr>
+    <tr><td><code>IF ... THEN ... ELSE ... END IF</code></td><td>Decision</td></tr>
+    <tr><td><code>WHILE ... DO ... END WHILE</code></td><td>Repeat while true</td></tr>
+    <tr><td><code>FOR i FROM 1 TO n ... END FOR</code></td><td>Repeat a known number of times</td></tr>
+  </table></div>
+  <p>There is no single official standard. What matters is that each line is clear and unambiguous.</p>
+
+  <h3>Example: average of n valid marks</h3>
+<pre>
+INPUT n
+SET total TO 0
+FOR i FROM 1 TO n
+    INPUT mark
+    WHILE mark &lt; 0 OR mark &gt; 100 DO
+        OUTPUT "Enter a mark from 0 to 100"
+        INPUT mark
+    END WHILE
+    SET total TO total + mark
+END FOR
+OUTPUT total / n
+</pre>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>Writing pseudocode that is really vague English ("process the marks"). If a step cannot be turned directly into code, it needs more detail. Note also that this example still divides by zero if <code>n</code> is 0; good pseudocode handles that case too.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Pseudocode = precise logic, no language syntax.</li>
+      <li>Use consistent keywords and indentation.</li>
+      <li>Every line should translate directly into code.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 14 -->
+<section class="topic" id="t14">
+  <h2><span class="num">14</span>Flowcharts and basic program flow</h2>
+  <p class="folder">00-programming-basics/14-flowcharts-basic-program-flow</p>
+
+  <p class="definition">A flowchart is a diagram of an algorithm, using standard shapes for each kind of step and arrows for the order in which steps run.</p>
+
+  <h3>Standard symbols</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Shape</th><th>Name</th><th>Used for</th></tr>
+    <tr><td class="shape-cell"><svg class="ico" viewBox="0 0 60 30" aria-hidden="true"><rect x="4" y="4" width="52" height="22" rx="11" class="shape"/></svg>Oval</td><td>Terminal</td><td>Start and End</td></tr>
+    <tr><td class="shape-cell"><svg class="ico" viewBox="0 0 60 30" aria-hidden="true"><polygon points="12,4 56,4 48,26 4,26" class="shape"/></svg>Parallelogram</td><td>Input / Output</td><td>Reading or displaying data</td></tr>
+    <tr><td class="shape-cell"><svg class="ico" viewBox="0 0 60 30" aria-hidden="true"><rect x="4" y="4" width="52" height="22" rx="3" class="shape"/></svg>Rectangle</td><td>Process</td><td>A calculation or assignment</td></tr>
+    <tr><td class="shape-cell"><svg class="ico" viewBox="0 0 60 30" aria-hidden="true"><polygon points="30,2 58,15 30,28 2,15" class="shape accent"/></svg>Diamond</td><td>Decision</td><td>A true/false question with two exits</td></tr>
+    <tr><td class="shape-cell"><svg class="ico" viewBox="0 0 60 30" aria-hidden="true"><defs><marker id="icoah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><path d="M6 15 H52" class="edge" marker-end="url(#icoah)"/></svg>Arrow</td><td>Flow line</td><td>The order of execution</td></tr>
+  </table></div>
+
+  <h3>The three basic control structures</h3>
+  <p>Any algorithm can be built from just three structures:</p>
+<figure class="fig"><svg class="dg" viewBox="0 0 760 260" style="max-width:760px" role="img" aria-label="Three control structures: sequence, selection, and iteration"><title>Three control structures: sequence, selection, and iteration</title><defs><marker id="ah5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><text x="90" y="20" text-anchor="middle" dominant-baseline="middle" class="head-t">Sequence</text><text x="330" y="20" text-anchor="middle" dominant-baseline="middle" class="head-t">Selection</text><text x="610" y="20" text-anchor="middle" dominant-baseline="middle" class="head-t">Iteration</text><rect x="40.0" y="49.0" width="100" height="42" rx="6" class="shape "/><text x="90" y="70" text-anchor="middle" dominant-baseline="middle">A</text><path d="M90 91 V124" class="edge" marker-end="url(#ah5)"/><rect x="40.0" y="125.0" width="100" height="42" rx="6" class="shape "/><text x="90" y="146" text-anchor="middle" dominant-baseline="middle">B</text><path d="M90 167 V200" class="edge" marker-end="url(#ah5)"/><rect x="40.0" y="201.0" width="100" height="42" rx="6" class="shape "/><text x="90" y="222" text-anchor="middle" dominant-baseline="middle">C</text><polygon points="330,38.0 405.0,70 330,102.0 255.0,70" class="shape accent"/><text x="330" y="70" text-anchor="middle" dominant-baseline="middle">condition?</text><path d="M255 70 H265 V125" class="edge" marker-end="url(#ah5)"/><path d="M405 70 H395 V125" class="edge" marker-end="url(#ah5)"/><text x="262" y="52" text-anchor="middle" dominant-baseline="middle" class="lab ok">true</text><text x="400" y="52" text-anchor="middle" dominant-baseline="middle" class="lab bad">false</text><rect x="220.0" y="125.0" width="90" height="42" rx="6" class="shape "/><text x="265" y="146" text-anchor="middle" dominant-baseline="middle">A</text><rect x="350.0" y="125.0" width="90" height="42" rx="6" class="shape "/><text x="395" y="146" text-anchor="middle" dominant-baseline="middle">B</text><path d="M265 167 V200 H330" class="edge"/><path d="M395 167 V200 H330" class="edge"/><path d="M330 200 V236" class="edge" marker-end="url(#ah5)"/><polygon points="580,58.0 655.0,90 580,122.0 505.0,90" class="shape accent"/><text x="580" y="90" text-anchor="middle" dominant-baseline="middle">condition?</text><path d="M580 122 V156" class="edge" marker-end="url(#ah5)"/><text x="596" y="140" text-anchor="start" dominant-baseline="middle" class="lab ok">true</text><rect x="525.0" y="157.0" width="110" height="42" rx="6" class="shape "/><text x="580" y="178" text-anchor="middle" dominant-baseline="middle">body</text><path d="M525 178 H488 V90 H503" class="edge" marker-end="url(#ah5)"/><path d="M655 90 H700" class="edge" marker-end="url(#ah5)"/><text x="678" y="74" text-anchor="middle" dominant-baseline="middle" class="lab bad">false</text><text x="730" y="90" text-anchor="middle" dominant-baseline="middle">exit</text></svg></figure>
+
+  <h3>Example: even or odd</h3>
+<figure class="fig"><svg class="dg" viewBox="0 0 520 452" style="max-width:520px" role="img" aria-label="Flowchart: start, input n, decide if n % 2 == 0, output even or odd, end"><title>Flowchart: start, input n, decide if n % 2 == 0, output even or odd, end</title><defs><marker id="ah6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="head"/></marker></defs><rect x="190.0" y="8.0" width="140" height="44" rx="22.0" class="shape"/><text x="260" y="30" text-anchor="middle" dominant-baseline="middle">Start</text><path d="M260 52 V82" class="edge" marker-end="url(#ah6)"/><polygon points="179.0,83.0 355.0,83.0 341.0,133.0 165.0,133.0" class="shape "/><text x="260" y="108" text-anchor="middle" dominant-baseline="middle">Input n</text><path d="M260 133 V160" class="edge" marker-end="url(#ah6)"/><polygon points="260,162.0 370.0,204 260,246.0 150.0,204" class="shape accent"/><text x="260" y="204" text-anchor="middle" dominant-baseline="middle" class="code">n % 2 == 0 ?</text><path d="M150 204 H110 V282" class="edge" marker-end="url(#ah6)"/><path d="M370 204 H410 V282" class="edge" marker-end="url(#ah6)"/><text x="128" y="188" text-anchor="middle" dominant-baseline="middle" class="lab ok">true</text><text x="392" y="188" text-anchor="middle" dominant-baseline="middle" class="lab bad">false</text><polygon points="44.0,283.0 190.0,283.0 176.0,333.0 30.0,333.0" class="shape "/><text x="110" y="308" text-anchor="middle" dominant-baseline="middle">Output &quot;even&quot;</text><polygon points="344.0,283.0 490.0,283.0 476.0,333.0 330.0,333.0" class="shape "/><text x="410" y="308" text-anchor="middle" dominant-baseline="middle">Output &quot;odd&quot;</text><path d="M110 333 V368 H260" class="edge"/><path d="M410 333 V368 H260" class="edge"/><path d="M260 368 V398" class="edge" marker-end="url(#ah6)"/><rect x="190.0" y="400.0" width="140" height="44" rx="22.0" class="shape"/><text x="260" y="422" text-anchor="middle" dominant-baseline="middle">End</text></svg></figure>
+
+  <div class="callout mistake">
+    <strong class="kind">Common mistake</strong>
+    <p>A decision diamond with only one exit, or arrows without labels. Every decision has exactly two exits, labelled true and false (or yes and no).</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Oval = start/end, parallelogram = I/O, rectangle = process, diamond = decision.</li>
+      <li>Three structures: sequence, selection, iteration.</li>
+      <li>Every decision has two labelled exits.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ 15 -->
+<section class="topic" id="t15">
+  <h2><span class="num">15</span>Basic problem-solving review</h2>
+  <p class="folder">00-programming-basics/15-programming-basics-project</p>
+
+  <p class="definition">Every problem in this stage is solved with the same method: understand it, design the steps, check them by hand, then code and test with normal, boundary, and invalid input.</p>
+
+  <h3>The method</h3>
+<ol class="method"><li><strong>Understand</strong><span>What is the input? What is the output? What are the rules?</span></li><li><strong>Examples</strong><span>Work out 2–3 cases by hand, including edge cases.</span></li><li><strong>Design</strong><span>Decompose; write pseudocode or draw a flowchart.</span></li><li><strong>Trace</strong><span>Run the design by hand with a trace table.</span></li><li><strong>Code</strong><span>Translate the design into C++.</span></li><li><strong>Test</strong><span>Normal, boundary, and invalid input.</span></li></ol>
+
+  <h3>Worked example: classify a number</h3>
+  <p><strong>Problem:</strong> read a whole number and output whether it is positive, negative, or zero.</p>
+<pre>
+INPUT n
+IF n &gt; 0 THEN
+    OUTPUT "positive"
+ELSE IF n &lt; 0 THEN
+    OUTPUT "negative"
+ELSE
+    OUTPUT "zero"
+END IF
+</pre>
+
+  <h3>Test plan</h3>
+  <div class="table-wrap"><table>
+    <tr><th>Kind</th><th>Input</th><th>Expected output</th></tr>
+    <tr><td>Normal</td><td>42</td><td>positive</td></tr>
+    <tr><td>Normal</td><td>−7</td><td>negative</td></tr>
+    <tr><td>Boundary</td><td>0</td><td>zero</td></tr>
+    <tr><td>Boundary</td><td>1 and −1</td><td>positive / negative</td></tr>
+    <tr><td>Invalid</td><td>abc</td><td>An error message, not a wrong classification</td></tr>
+  </table></div>
+
+  <div class="callout myth">
+    <strong class="kind">Misconception</strong>
+    <p>"It worked for my example, so it is correct." One passing case proves very little. Boundaries and invalid input are where most bugs hide.</p>
+  </div>
+
+  <div class="revision">
+    <h3>Quick revision</h3>
+    <ul>
+      <li>Understand → examples → design → trace → code → test.</li>
+      <li>Test normal, boundary, and invalid input every time.</li>
+      <li>Correct design first makes coding the easy part.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================ Summary -->
+<section class="topic" id="summary">
+  <h2>Stage summary</h2>
+  <div class="table-wrap"><table>
+    <tr><th>#</th><th>Topic</th><th>One-line idea</th></tr>
+    <tr><td>01</td><td>Programming</td><td>Solving problems with precise instructions.</td></tr>
+    <tr><td>02</td><td>Program</td><td>Instructions + data; source is translated to an executable.</td></tr>
+    <tr><td>03</td><td>Algorithm</td><td>Finite, precise steps from input to correct output.</td></tr>
+    <tr><td>04</td><td>IPO</td><td>Know what you receive and what you must produce.</td></tr>
+    <tr><td>05</td><td>Variables &amp; state</td><td>Named values that change; trace them step by step.</td></tr>
+    <tr><td>06</td><td>Data &amp; operations</td><td>The kind of data decides which operations are valid.</td></tr>
+    <tr><td>07</td><td>Expressions</td><td>Combinations that evaluate to one value, by precedence.</td></tr>
+    <tr><td>08</td><td>Statements</td><td>Complete actions, run in order.</td></tr>
+    <tr><td>09</td><td>Conditions</td><td>True/false questions choose the path.</td></tr>
+    <tr><td>10</td><td>Repetition</td><td>Repeat by count or by condition; watch the boundaries.</td></tr>
+    <tr><td>11</td><td>Functions</td><td>Named, reusable logic with inputs and a result.</td></tr>
+    <tr><td>12</td><td>Decomposition</td><td>Split big problems into solvable pieces.</td></tr>
+    <tr><td>13</td><td>Pseudocode</td><td>Precise logic without language syntax.</td></tr>
+    <tr><td>14</td><td>Flowcharts</td><td>Sequence, selection, iteration as a diagram.</td></tr>
+    <tr><td>15</td><td>Review</td><td>Understand → design → trace → code → test.</td></tr>
+  </table></div>
+</section>
+
+<!-- ============================================================ Self-test -->
+<section class="topic" id="selftest">
+  <h2>Self-test</h2>
+  <p>Answer each question out loud or on paper before opening the answer.</p>
+
+  <details><summary>1. What is the difference between an algorithm and a program?</summary>
+    <p>An algorithm is the language-independent sequence of steps. A program is an implementation of an algorithm in a specific language that a computer can execute.</p></details>
+  <details><summary>2. Name the five properties of an algorithm.</summary>
+    <p>Input, output, definiteness, finiteness, and effectiveness.</p></details>
+  <details><summary>3. Why does swapping two variables need a third one?</summary>
+    <p>Assigning one variable to the other overwrites a value before it is saved. The temporary variable preserves it.</p></details>
+  <details><summary>4. What is the value of 2 + 3 × 4, and why?</summary>
+    <p>14. Multiplication has higher precedence than addition, so 3 × 4 is evaluated first.</p></details>
+  <details><summary>5. What is the difference between an expression and a statement?</summary>
+    <p>An expression produces a value. A statement performs an action and often contains expressions.</p></details>
+  <details><summary>6. In an if / else-if chain, why does order matter?</summary>
+    <p>Only the first true branch runs. If a broader condition is checked first, narrower ones below it are never reached.</p></details>
+  <details><summary>7. What are the four parts of a loop?</summary>
+    <p>Initialise, check the condition, run the body, and update.</p></details>
+  <details><summary>8. What causes an infinite loop?</summary>
+    <p>A condition that never becomes false, most often because the update step is missing or wrong.</p></details>
+  <details><summary>9. Why should a calculation function avoid printing?</summary>
+    <p>A function with one job is easier to test and reuse. Printing ties it to one kind of output.</p></details>
+  <details><summary>10. Which three control structures can express any algorithm?</summary>
+    <p>Sequence, selection, and iteration.</p></details>
+  <details><summary>11. Which three kinds of input should every test plan include?</summary>
+    <p>Normal, boundary, and invalid input.</p></details>
+</section>
+
+<footer>
+  <p>C++ From Zero to Advanced · Stage 00 theory reference. The detailed implementation for each topic is in its folder's <code>main.cpp</code> and <code>README.md</code>.</p>
+</footer>
+</main>
+</div>
+
+<script>
+(function () {
+  var btn = document.getElementById('themeBtn');
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem('theory-theme');
+    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  btn.addEventListener('click', function () {
+    var current = root.getAttribute('data-theme');
+    if (!current) {
+      current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    var next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theory-theme', next); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>
