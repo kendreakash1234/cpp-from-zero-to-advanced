@@ -12,3 +12,6 @@
 *.out
 *.exe
 build/
+*.out
+*.exe
+build/
