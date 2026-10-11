@@ -1,0 +1,3347 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stage 01 — C++ Fundamentals · C++ From Zero to Advanced</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f6f8fa;
+  --border: #d1d9e0;
+  --text: #1f2328;
+  --muted: #59636e;
+  --blue: #0969da;
+  --green: #1a7f37;
+  --red: #cf222e;
+  --amber: #9a6700;
+  --purple: #8250df;
+  --blue-bg: #ddf4ff;
+  --green-bg: #dafbe1;
+  --red-bg: #ffebe9;
+  --amber-bg: #fff8c5;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #9198a1;
+    --blue: #58a6ff; --green: #3fb950; --red: #ff7b72; --amber: #e3b341; --purple: #d2a8ff;
+    --blue-bg: #0c2d6b40; --green-bg: #0f3a1f66; --red-bg: #4a121566; --amber-bg: #3d2e0066;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #e6edf3; --muted: #9198a1;
+  --blue: #58a6ff; --green: #3fb950; --red: #ff7b72; --amber: #e3b341; --purple: #d2a8ff;
+  --blue-bg: #0c2d6b40; --green-bg: #0f3a1f66; --red-bg: #4a121566; --amber-bg: #3d2e0066;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 17px; line-height: 1.65;
+}
+a { color: var(--blue); }
+a:focus-visible, button:focus-visible, summary:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
+nav.toc {
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  border-right: 1px solid var(--border); background: var(--surface);
+  padding: 28px 20px 40px;
+}
+.toc .brand { font-weight: 700; font-size: 15px; line-height: 1.3; margin: 0 0 4px; }
+.toc .stage { color: var(--muted); font-size: 14px; margin: 0 0 20px; }
+.toc h2 { font-size: 13px; color: var(--muted); font-weight: 600; margin: 20px 0 6px; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li a {
+  display: grid; grid-template-columns: 30px 1fr; gap: 4px;
+  padding: 5px 8px; border-radius: 6px; text-decoration: none; color: var(--text); font-size: 14.5px; line-height: 1.4;
+}
+.toc li a span { font-family: var(--mono); color: var(--muted); font-size: 13px; padding-top: 1px; }
+.toc li a:hover { background: var(--bg); }
+.toc .extra a { grid-template-columns: 1fr; }
+.theme-btn {
+  margin-top: 24px; font: inherit; font-size: 14px; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; cursor: pointer;
+}
+
+main { padding: 48px 56px 96px; max-width: 900px; }
+header.hero h1 { font-size: 44px; line-height: 1.15; margin: 0 0 12px; letter-spacing: -0.5px; }
+header.hero .series { font-family: var(--mono); color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+header.hero p.lead { font-size: 19px; color: var(--muted); margin: 0 0 28px; max-width: 68ch; }
+
+section.topic { border-top: 1px solid var(--border); padding-top: 40px; margin-top: 56px; }
+section.topic > h2 { font-size: 30px; line-height: 1.25; margin: 0 0 6px; display: flex; gap: 14px; align-items: baseline; }
+section.topic > h2 .num { font-family: var(--mono); color: var(--blue); font-size: 20px; font-weight: 600; }
+.folder { font-family: var(--mono); font-size: 13px; color: var(--muted); margin: 0 0 20px; }
+h3 { font-size: 19px; margin: 28px 0 8px; }
+p, ul, ol { max-width: 72ch; }
+li { margin: 4px 0; }
+code { font-family: var(--mono); font-size: 0.9em; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+pre {
+  font-family: var(--mono); font-size: 14.5px; line-height: 1.55;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px 18px; overflow-x: auto; margin: 12px 0 18px;
+}
+pre code { background: none; border: 0; padding: 0; font-size: inherit; }
+.cpp-label { font-size: 13px; color: var(--muted); margin: 14px 0 -6px; }
+
+.definition {
+  font-size: 20px; line-height: 1.5; font-weight: 500; margin: 8px 0 18px; padding: 16px 20px;
+  background: var(--blue-bg); border-radius: 8px; max-width: 72ch;
+}
+.callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; max-width: 72ch; }
+.callout p { margin: 4px 0; }
+.callout strong.kind { display: block; margin-bottom: 2px; }
+.callout.model { background: var(--green-bg); }
+.callout.model strong.kind { color: var(--green); }
+.callout.mistake { background: var(--red-bg); }
+.callout.mistake strong.kind { color: var(--red); }
+.callout.myth { background: var(--amber-bg); }
+.callout.myth strong.kind { color: var(--amber); }
+
+table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 15.5px; }
+.table-wrap { overflow-x: auto; }
+th, td { text-align: left; border-bottom: 1px solid var(--border); padding: 8px 12px; vertical-align: top; }
+th { background: var(--surface); font-weight: 600; }
+td code { white-space: nowrap; }
+
+.revision { border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-top: 24px; }
+.revision h3 { margin: 0 0 6px; font-size: 16px; color: var(--muted); }
+.revision ul { margin: 0; padding-left: 20px; }
+
+.phases { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 8px 0 12px; }
+.phase { border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: var(--surface); }
+.phase h3 { margin: 0 0 6px; font-size: 15px; }
+.phase ol { margin: 0; padding-left: 0; list-style: none; font-size: 14px; }
+.phase li { margin: 2px 0; }
+.phase li span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+details { border: 1px solid var(--border); border-radius: 8px; padding: 10px 16px; margin: 8px 0; max-width: 72ch; }
+summary { cursor: pointer; font-weight: 500; }
+details p { margin: 8px 0 4px; color: var(--text); }
+
+
+.fig { margin: 14px 0 20px; padding: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow-x: auto; }
+svg.dg { display: block; width: 100%; max-width: 760px; height: auto; margin: 0 auto; font-family: var(--sans); }
+.dg .shape, .ico .shape { fill: var(--bg); stroke: var(--muted); stroke-width: 1.5; }
+.dg .shape.accent, .ico .shape.accent { stroke: var(--blue); stroke-width: 2; }
+.dg text { fill: var(--text); font-size: 14px; }
+.dg text.code { font-family: var(--mono); font-size: 14px; }
+.dg text.lab { fill: var(--muted); font-size: 13px; }
+.dg text.lab.ok { fill: var(--green); } .dg text.lab.bad { fill: var(--red); }
+.dg text.head-t { font-weight: 600; font-size: 15px; }
+.dg .edge, .ico .edge { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+.dg .head, .ico .head { fill: var(--muted); }
+.ico { width: 46px; height: 23px; vertical-align: middle; margin-right: 10px; }
+td.shape-cell { white-space: nowrap; }
+.flow { display: flex; margin: 14px 0 20px; gap: 0; }
+.flow.h { flex-direction: row; align-items: stretch; overflow-x: auto; padding-bottom: 4px; }
+.flow.v { flex-direction: column; align-items: flex-start; max-width: 520px; }
+.flow .step { display: flex; flex-direction: column; justify-content: center; gap: 2px; padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); min-width: 140px; }
+.flow.v .step { width: 100%; }
+.flow .step strong { font-weight: 600; font-size: 15.5px; }
+.flow .step span { font-size: 14px; color: var(--muted); }
+.flow .step.accent { border-color: var(--blue); }
+.flow .step.ok { border-color: var(--green); }
+.flow .step.warn { border-color: var(--amber); }
+.flow .arr { color: var(--muted); font-size: 20px; line-height: 1; align-self: center; padding: 6px 10px; }
+.flow.v .arr { align-self: flex-start; padding: 4px 0 4px 24px; }
+ol.method { list-style: none; counter-reset: m; padding: 0; margin: 14px 0 20px; max-width: 72ch; }
+ol.method li { counter-increment: m; display: grid; grid-template-columns: 36px 120px 1fr; align-items: baseline; gap: 8px; padding: 10px 0; border-bottom: 1px solid var(--border); margin: 0; }
+ol.method li::before { content: counter(m); font-family: var(--mono); color: var(--blue); font-weight: 600; }
+ol.method li span { color: var(--muted); }
+@media (max-width: 560px) { ol.method li { grid-template-columns: 28px 1fr; } ol.method li span { grid-column: 2; } }
+
+footer { margin-top: 72px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); padding-top: 20px; }
+
+@media (max-width: 980px) {
+  .layout { grid-template-columns: 1fr; }
+  nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--border); }
+  main { padding: 32px 20px 64px; }
+  .phases { grid-template-columns: repeat(2, 1fr); }
+  header.hero h1 { font-size: 34px; }
+}
+@media (max-width: 560px) { .phases { grid-template-columns: 1fr; } }
+</style>
+<style>
+.topic h3 { font-size: 19px; margin: 26px 0 8px; }
+.topic pre { white-space: pre; }
+.callout-global { border-radius: 8px; padding: 14px 18px; margin: 18px 0; background: var(--amber-bg); max-width: 72ch; }
+.phases { grid-template-columns: repeat(4, 1fr); }
+</style></head>
+<body><div class="layout">
+<nav class="toc" aria-label="Stage contents"><p class="brand">C++ From Zero to Advanced</p><p class="stage">Stage 01 — C++ Fundamentals</p>
+<h2>The language and the build</h2><ol><li><a href="#t01"><span>01</span>What C++ is and why it exists</a></li><li><a href="#t02"><span>02</span>C++ compared with C and higher-level languages</a></li><li><a href="#t03"><span>03</span>C++ compilation pipeline</a></li><li><a href="#t04"><span>04</span>First C++ program</a></li><li><a href="#t05"><span>05</span>main()</a></li><li><a href="#t06"><span>06</span>#include</a></li><li><a href="#t07"><span>07</span>Namespaces and std::</a></li><li><a href="#t08"><span>08</span>std::cout, std::cerr, and std::cin</a></li><li><a href="#t09"><span>09</span>Comments</a></li></ol><h2>Variables and types</h2><ol><li><a href="#t10"><span>10</span>Variables and initialization</a></li><li><a href="#t11"><span>11</span>Fundamental data types</a></li><li><a href="#t12"><span>12</span>Integer and floating-point types</a></li><li><a href="#t13"><span>13</span>char, bool, and void</a></li><li><a href="#t14"><span>14</span>Literals</a></li></ol><h2>Working with values</h2><ol><li><a href="#t15"><span>15</span>Assignment</a></li><li><a href="#t16"><span>16</span>const</a></li><li><a href="#t17"><span>17</span>Type inference with auto</a></li><li><a href="#t18"><span>18</span>Arithmetic, comparison, and logical operators</a></li><li><a href="#t19"><span>19</span>Type conversions and static_cast</a></li></ol><h2>Scope, input, and engineering tools</h2><ol><li><a href="#t20"><span>20</span>Block scope</a></li><li><a href="#t21"><span>21</span>Reading input with std::cin</a></li><li><a href="#t22"><span>22</span>A first look at std::string and std::vector</a></li><li><a href="#t23"><span>23</span>Reading compiler errors and warnings</a></li><li><a href="#t24"><span>24</span>Undefined behavior red-flag primer</a></li></ol><h2>Revise</h2><ol class="extra"><li><a href="#summary">Stage summary</a></li><li><a href="#selftest">Self-test</a></li><li><a href="#toolkit">Build toolkit</a></li></ol>
+<button class="theme-btn" type="button" id="themeBtn">Switch theme</button></nav>
+<main><header class="hero"><p class="series">C++ From Zero to Advanced · Stage 01</p><h1>C++ Fundamentals</h1>
+<p class="lead">The language, the build, types and values, and the engineering habits that catch bugs early. Each section matches the README in its topic folder; every result was produced by compiling and running real code with GCC 13 and -std=c++23 on x86-64 Linux.</p>
+<div class="phases"><div class="phase"><h3>The language and the build</h3><ol><li><span>01</span>What C++ is and why it exists</li><li><span>02</span>C++ compared with C and higher-level languages</li><li><span>03</span>C++ compilation pipeline</li><li><span>04</span>First C++ program</li><li><span>05</span>main()</li><li><span>06</span>#include</li><li><span>07</span>Namespaces and std::</li><li><span>08</span>std::cout, std::cerr, and std::cin</li><li><span>09</span>Comments</li></ol></div><div class="phase"><h3>Variables and types</h3><ol><li><span>10</span>Variables and initialization</li><li><span>11</span>Fundamental data types</li><li><span>12</span>Integer and floating-point types</li><li><span>13</span>char, bool, and void</li><li><span>14</span>Literals</li></ol></div><div class="phase"><h3>Working with values</h3><ol><li><span>15</span>Assignment</li><li><span>16</span>const</li><li><span>17</span>Type inference with auto</li><li><span>18</span>Arithmetic, comparison, and logical operators</li><li><span>19</span>Type conversions and static_cast</li></ol></div><div class="phase"><h3>Scope, input, and engineering tools</h3><ol><li><span>20</span>Block scope</li><li><span>21</span>Reading input with std::cin</li><li><span>22</span>A first look at std::string and std::vector</li><li><span>23</span>Reading compiler errors and warnings</li><li><span>24</span>Undefined behavior red-flag primer</li></ol></div></div></header>
+<section class="topic" id="toolkit"><h2>Build toolkit used in this stage</h2>
+<div class="table-wrap"><table><tr><th>Alias</th><th>Command</th><th>Use</th></tr>
+<tr><td><code>cxx</code></td><td><code>g++ -Wall -Wextra -Wpedantic -Wshadow=local -std=c++23</code></td><td>everyday builds: aim for zero warnings</td></tr>
+<tr><td><code>cxxt</code></td><td><code>cxx -g -fsanitize=undefined,float-cast-overflow -D_GLIBCXX_ASSERTIONS</code></td><td>test builds: catch undefined behavior at run time</td></tr></table></div>
+<div class="callout-global"><strong>Habit:</strong> edit → build → run → read the output. A failed build keeps the old executable; delete it before testing that a build fails.</div></section>
+<section class="topic" id="t01"><h2><span class="num">01</span>What C++ is and why it exists</h2><p class="folder">01-cpp-fundamentals/01-what-is-cpp</p><h3>What is it?</h3>
+<p>C++ is a <strong>compiled, statically typed, general-purpose</strong> language created by Bjarne
+Stroustrup, starting in 1979 as "C with Classes". It is standardized by ISO
+(C++98, 03, 11, 14, 17, 20, 23, and C++26).</p>
+<h3>Why does it exist?</h3>
+<p>To combine C's speed and direct access to the hardware with tools for building
+large programs: types you define yourself, generic code, and automatic resource
+cleanup.</p>
+<h3>Key ideas</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Idea</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Compiled</td>
+<td>source code is translated to machine code before it runs</td>
+</tr>
+<tr>
+<td>Statically typed</td>
+<td>every object's type is known at compile time</td>
+</tr>
+<tr>
+<td>Zero-overhead abstraction</td>
+<td>what you don't use, you don't pay for</td>
+</tr>
+<tr>
+<td>Multi-paradigm</td>
+<td>procedural, object-oriented, generic, functional styles</td>
+</tr>
+<tr>
+<td>Standardized</td>
+<td>one ISO standard, many compilers (GCC, Clang, MSVC)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Where it is used</h3>
+<p>Operating systems, browsers, game engines, databases, embedded and automotive
+systems, trading systems, and broadcast and media software.</p>
+<h3>Key takeaway</h3>
+<p>C++ gives you control and performance, and in return asks you to be precise.</p></section><section class="topic" id="t02"><h2><span class="num">02</span>C++ compared with C and higher-level languages</h2><p class="folder">01-cpp-fundamentals/02-cpp-vs-other-languages</p><h3>What is it?</h3>
+<p>A comparison that places C++ between low-level C and higher-level languages such
+as Python, Java, and C#.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>C</th>
+<th>C++</th>
+<th>Python / Java / C#</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Execution</td>
+<td>compiled to machine code</td>
+<td>compiled to machine code</td>
+<td>interpreted or VM / JIT</td>
+</tr>
+<tr>
+<td>Types</td>
+<td>static</td>
+<td>static, plus user-defined and generic</td>
+<td>dynamic (Python) or static</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>manual</td>
+<td>automatic via RAII, manual possible</td>
+<td>garbage collected</td>
+</tr>
+<tr>
+<td>Abstractions</td>
+<td>functions, structs</td>
+<td>classes, templates, lambdas</td>
+<td>rich, with runtime cost</td>
+</tr>
+<tr>
+<td>Speed / control</td>
+<td>very high</td>
+<td>very high</td>
+<td>lower, more safety by default</td>
+</tr>
+<tr>
+<td>Undefined behavior</td>
+<td>yes</td>
+<td>yes</td>
+<td>mostly no</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>C++ keeps C's performance and adds abstractions that cost nothing at run time.
+The price is responsibility: the language trusts you more than higher-level ones do.</p></section><section class="topic" id="t03"><h2><span class="num">03</span>C++ compilation pipeline</h2><p class="folder">01-cpp-fundamentals/03-cpp-build-pipeline</p><h3>What is it?</h3>
+<p>The steps that turn <code>main.cpp</code> into an executable:
+<strong>preprocessing → compilation → assembly → linking</strong>.</p>
+<pre><code class="language-text">main.cpp --preprocess--&gt; main.ii --compile--&gt; main.s --assemble--&gt; main.o --link--&gt; main
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stage</th>
+<th>Input</th>
+<th>Output</th>
+<th>What happens</th>
+<th>GCC flag</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preprocessing</td>
+<td><code>main.cpp</code></td>
+<td><code>main.ii</code></td>
+<td><code>#include</code> pasted in, macros expanded</td>
+<td><code>-E</code></td>
+</tr>
+<tr>
+<td>Compilation</td>
+<td><code>main.ii</code></td>
+<td><code>main.s</code></td>
+<td>C++ checked and translated to assembly</td>
+<td><code>-S</code></td>
+</tr>
+<tr>
+<td>Assembly</td>
+<td><code>main.s</code></td>
+<td><code>main.o</code></td>
+<td>assembly translated to machine code (object file)</td>
+<td><code>-c</code></td>
+</tr>
+<tr>
+<td>Linking</td>
+<td><code>main.o</code></td>
+<td><code>main</code></td>
+<td>object files and libraries joined into an executable</td>
+<td>(none)</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code class="language-bash">g++ -std=c++23 -E main.cpp -o main.ii
+g++ -std=c++23 -S main.cpp -o main.s
+g++ -std=c++23 -c main.cpp -o main.o
+g++ main.o -o main
+</code></pre>
+<h3>Why it matters</h3>
+<p>Errors come from different stages: a typo is a compiler error with a line number;
+<code>undefined reference to 'main'</code> is a <strong>linker</strong> error with no line number (topic 23).</p>
+<h3>Key takeaway</h3>
+<p><code>g++ main.cpp -o main</code> runs all four steps at once; knowing them tells you which
+step failed.</p></section><section class="topic" id="t04"><h2><span class="num">04</span>First C++ program</h2><p class="folder">01-cpp-fundamentals/04-first-program</p><h3>Example</h3>
+<pre><code class="language-cpp">#include &lt;iostream&gt;
+
+int main()
+{
+    std::cout &lt;&lt; &quot;Hello, C++!\n&quot;;
+    return 0;
+}
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Line</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#include &lt;iostream&gt;</code></td>
+<td>make <code>std::cout</code> available (preprocessor)</td>
+</tr>
+<tr>
+<td><code>int main()</code></td>
+<td>the function where the program starts</td>
+</tr>
+<tr>
+<td><code>std::cout &lt;&lt; "Hello, C++!\n";</code></td>
+<td>write text to standard output</td>
+</tr>
+<tr>
+<td><code>return 0;</code></td>
+<td>end <code>main</code> and report success to the OS</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Build and run</h3>
+<pre><code class="language-bash">g++ -Wall -Wextra -Wpedantic -std=c++23 main.cpp -o main
+./main
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Forgetting <code>;</code></td>
+<td>every statement ends with <code>;</code></td>
+</tr>
+<tr>
+<td><code>cout</code> without <code>std::</code></td>
+<td>write <code>std::cout</code></td>
+</tr>
+<tr>
+<td>Running before rebuilding</td>
+<td>edit, rebuild, then run</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>Every program is source code, built into an executable, then run.</p></section><section class="topic" id="t05"><h2><span class="num">05</span>main()</h2><p class="folder">01-cpp-fundamentals/05-main-function</p><h3>What is it?</h3>
+<p><code>main</code> is the function the program starts in. Every executable program has
+exactly one.</p>
+<h3>Rules</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Rule</th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Return type</td>
+<td>always <code>int</code></td>
+</tr>
+<tr>
+<td>Return value</td>
+<td>the <strong>exit status</strong>: 0 means success, non-zero failure</td>
+</tr>
+<tr>
+<td>Missing <code>return</code> in <code>main</code></td>
+<td>allowed: <code>main</code> alone returns 0 automatically</td>
+</tr>
+<tr>
+<td>Forms</td>
+<td><code>int main()</code> or <code>int main(int argc, char* argv[])</code> (Stage 05)</td>
+</tr>
+</tbody>
+</table></div>
+<pre><code class="language-bash">./main; echo $?     # prints the exit status
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>void main()</code></td>
+<td>not valid C++</td>
+</tr>
+<tr>
+<td>Misspelling <code>main</code> (<code>mian</code>)</td>
+<td>linker error: undefined reference to <code>main</code></td>
+</tr>
+<tr>
+<td>Returning data from <code>main</code></td>
+<td>the exit status is for success/failure codes</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p><code>main</code> is where execution starts, and its return value tells the operating system
+whether the program succeeded.</p></section><section class="topic" id="t06"><h2><span class="num">06</span>#include</h2><p class="folder">01-cpp-fundamentals/06-include</p><h3>What is it?</h3>
+<p>A <strong>preprocessor directive</strong> that copies the contents of a header file into your
+source file before compilation.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Searches</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#include &lt;iostream&gt;</code></td>
+<td>the system / standard library directories</td>
+<td>standard headers</td>
+</tr>
+<tr>
+<td><code>#include "my.h"</code></td>
+<td>the current directory first, then system</td>
+<td>your own headers (Stage 03)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Why it matters</h3>
+<p>The compiler only knows names it has seen. <code>std::cout</code> is declared in <code>&lt;iostream&gt;</code>,
+<code>std::string</code> in <code>&lt;string&gt;</code>, <code>std::vector</code> in <code>&lt;vector&gt;</code>.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Relying on a header included indirectly</td>
+<td>include what you use (<code>&lt;string&gt;</code> for <code>std::string</code>)</td>
+</tr>
+<tr>
+<td><code>&lt;bits/stdc++.h&gt;</code></td>
+<td>non-standard and slow; include specific headers</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p><code>#include</code> is textual copying by the preprocessor. Include every header you use.</p></section><section class="topic" id="t07"><h2><span class="num">07</span>Namespaces and std::</h2><p class="folder">01-cpp-fundamentals/07-namespaces-and-std</p><h3>What is it?</h3>
+<p>A <strong>namespace</strong> groups names to avoid collisions. The Standard Library lives in
+namespace <code>std</code>, so its names are written <code>std::cout</code>, <code>std::string</code>, <code>std::vector</code>.</p>
+<h3>The scope resolution operator</h3>
+<p><code>::</code> means "the name on the right, inside the namespace on the left".</p>
+<h3>using namespace std</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Effect</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>std::cout</code></td>
+<td>explicit, no collisions</td>
+<td>preferred</td>
+</tr>
+<tr>
+<td><code>using namespace std;</code></td>
+<td>all <code>std</code> names visible; collisions possible</td>
+<td>avoid, never in headers</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>Write <code>std::</code> explicitly. It costs a few characters and prevents name collisions.</p></section><section class="topic" id="t08"><h2><span class="num">08</span>std::cout, std::cerr, and std::cin</h2><p class="folder">01-cpp-fundamentals/08-cout-cerr-cin</p><h3>What is it?</h3>
+<p>The three standard streams, from <code>&lt;iostream&gt;</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Stream</th>
+<th>Direction</th>
+<th>Typical use</th>
+<th>Buffering</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>std::cout</code></td>
+<td>output</td>
+<td>normal program output</td>
+<td>buffered</td>
+</tr>
+<tr>
+<td><code>std::cerr</code></td>
+<td>output</td>
+<td>error messages</td>
+<td>unbuffered: appears immediately</td>
+</tr>
+<tr>
+<td><code>std::cin</code></td>
+<td>input</td>
+<td>reading input</td>
+<td>buffered (topic 21)</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Operators</h3>
+<p><code>&lt;&lt;</code> inserts into an output stream; <code>&gt;&gt;</code> extracts from an input stream.</p>
+<h3>Why two outputs?</h3>
+<p>Normal output and errors can be separated: <code>./main &gt; out.txt</code> sends <code>std::cout</code>
+to the file while <code>std::cerr</code> still appears on screen.</p>
+<h3>'\n' vs std::endl</h3>
+<p><code>std::endl</code> adds a newline <strong>and flushes</strong> the buffer; <code>'\n'</code> only adds a newline.
+Prefer <code>'\n'</code> unless you need an immediate flush.</p>
+<h3>Key takeaway</h3>
+<p>Results to <code>std::cout</code>, errors to <code>std::cerr</code>, input from <code>std::cin</code>.</p></section><section class="topic" id="t09"><h2><span class="num">09</span>Comments</h2><p class="folder">01-cpp-fundamentals/09-comments</p><h3>What is it?</h3>
+<p>Text the compiler ignores, written for people.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Example</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Line</td>
+<td><code>// explain why</code></td>
+<td>most comments</td>
+</tr>
+<tr>
+<td>Block</td>
+<td><code>/* ... */</code></td>
+<td>longer notes; cannot nest</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Good comments explain why</h3>
+<pre><code class="language-cpp">const double taxRate{0.18};   // GST rate set by policy, update yearly
+</code></pre>
+<p>A comment that repeats the code (<code>x = x + 1; // add 1 to x</code>) adds nothing.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comments that repeat the code</td>
+<td>explain intent, constraints, or surprises</td>
+</tr>
+<tr>
+<td>Outdated comments</td>
+<td>update them with the code</td>
+</tr>
+<tr>
+<td>Nesting <code>/* /* */ */</code></td>
+<td>block comments do not nest</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>Code says what. Comments say why.</p></section><section class="topic" id="t10"><h2><span class="num">10</span>Variables and initialization</h2><p class="folder">01-cpp-fundamentals/10-variables-and-initialization</p><h3>What is it?</h3>
+<p>A <strong>variable</strong> is a named object: storage with a <strong>type</strong> that holds a <strong>value</strong>.</p>
+<p><strong>Initialization</strong> gives an object its first value at the moment it is created.
+<strong>Assignment</strong> replaces the value of an object that already exists.</p>
+<h3>Why does it matter?</h3>
+<p>C++ does not zero local variables automatically. A local variable without an
+initializer holds an <strong>indeterminate value</strong>, and <strong>reading it is undefined
+behavior</strong>. Initializing every variable when it is defined keeps the program in a
+known, valid state.</p>
+<h3>Initialization forms</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Syntax</th>
+<th>Result for <code>int</code></th>
+<th>Allows narrowing?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Direct-list-initialization</td>
+<td><code>int x{10};</code></td>
+<td>10</td>
+<td>No: compile error</td>
+</tr>
+<tr>
+<td>Copy-initialization</td>
+<td><code>int x = 10;</code></td>
+<td>10</td>
+<td>Yes, silently</td>
+</tr>
+<tr>
+<td>Direct-initialization</td>
+<td><code>int x(10);</code></td>
+<td>10</td>
+<td>Yes, silently</td>
+</tr>
+<tr>
+<td>Value-initialization</td>
+<td><code>int x{};</code></td>
+<td>0 (guaranteed)</td>
+<td>—</td>
+</tr>
+<tr>
+<td>Default-initialization</td>
+<td><code>int x;</code></td>
+<td>Local: indeterminate. Global: 0</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>Prefer braces: they reject narrowing, and <code>{}</code> guarantees zero.</p>
+<h3>Example</h3>
+<pre><code class="language-cpp">int width{10};    // direct-list-initialization (preferred)
+int height = 20;  // copy-initialization
+int depth(30);    // direct-initialization
+int count{};      // value-initialization: guaranteed to be 0
+</code></pre>
+<p>Output:</p>
+<pre><code class="language-text">direct-list-initialization: 10
+copy-initialization:        20
+direct-initialization:      30
+value-initialization:       0
+</code></pre>
+<h3>How the program works</h3>
+<p>Each variable is created with a value at its definition, so every read in
+<code>std::cout</code> is well-defined. The commented-out lines show three traps; uncomment
+one at a time to see the compiler's response.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int total;</code> then reading it</td>
+<td>Undefined behavior</td>
+<td><code>int total{};</code></td>
+</tr>
+<tr>
+<td><code>int a, b = 0;</code></td>
+<td>Only <code>b</code> is initialized</td>
+<td>One variable per definition</td>
+</tr>
+<tr>
+<td><code>int value();</code></td>
+<td>Declares a function (vexing parse)</td>
+<td><code>int value{};</code></td>
+</tr>
+<tr>
+<td><code>int n = 3.9;</code></td>
+<td>Silently stores 3 (truncation)</td>
+<td><code>int n{3.9};</code> is rejected by the compiler</td>
+</tr>
+<tr>
+<td>Defining the same name twice in one scope</td>
+<td>Redefinition error</td>
+<td>Define once; use assignment to change the value</td>
+</tr>
+</tbody>
+</table></div>
+<h3>UB watch</h3>
+<p>Reading an uninitialized local variable is undefined behavior. In practice, the
+same program printed <code>32766</code> when built with <code>-O0</code> and <code>0</code> with <code>-O2</code>. Neither
+value is meaningful, and a result of <code>0</code> does not mean the variable was zeroed.</p>
+<p>C++26 reclassifies this read as <em>erroneous behavior</em>. It is still a bug.</p>
+<h3>Key takeaway</h3>
+<p>Initialize every variable when you define it, and prefer brace initialization.</p>
+<h3>Standard</h3>
+<p>C++23 (brace initialization was introduced in C++11).</p></section><section class="topic" id="t11"><h2><span class="num">11</span>Fundamental data types</h2><p class="folder">01-cpp-fundamentals/11-fundamental-data-types</p><h3>What is it?</h3>
+<p>A <strong>type</strong> decides four things about an object: its <strong>set of values</strong>, its
+<strong>size</strong>, its <strong>representation</strong> (how its bits are interpreted), and the
+<strong>operations</strong> that are valid on it.</p>
+<p><strong>Fundamental types</strong> are built into the C++ language itself. They need no
+<code>#include</code> and are not part of the Standard Library.</p>
+<h3>Why does it matter?</h3>
+<p>Memory holds only bits. The type gives those bits their meaning: the same bit
+pattern can be the number <code>65</code> as an <code>int</code> or the character <code>'A'</code> as a <code>char</code>.
+C++ checks types at compile time, and uses them to choose storage and machine
+instructions.</p>
+<h3>The families</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Boolean</td>
+<td><code>bool</code></td>
+</tr>
+<tr>
+<td>Character</td>
+<td><code>char</code> (plus <code>signed char</code>, <code>unsigned char</code>, <code>wchar_t</code>, <code>char8_t</code>, <code>char16_t</code>, <code>char32_t</code>)</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td><code>short</code>, <code>int</code>, <code>long</code>, <code>long long</code> (each also <code>unsigned</code>)</td>
+</tr>
+<tr>
+<td>Floating-point</td>
+<td><code>float</code>, <code>double</code>, <code>long double</code></td>
+</tr>
+<tr>
+<td>Void</td>
+<td><code>void</code> (no value; no object can have this type)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Boolean, character, and integer types are <strong>integral types</strong>. Integral plus
+floating-point types are <strong>arithmetic types</strong>.</p>
+<h3>Size guarantees vs. this platform</h3>
+<p><code>sizeof(type)</code> gives the size of a type in bytes. It is evaluated at compile time.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Guaranteed by the standard</th>
+<th>x86-64 Linux (measured)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>char</code></td>
+<td>exactly 1 byte</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>bool</code></td>
+<td>not specified</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>short</code></td>
+<td>≥ 16 bits</td>
+<td>2 bytes = 16 bits ✓</td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td>≥ 16 bits, ≥ <code>short</code></td>
+<td>4 bytes = 32 bits ✓</td>
+</tr>
+<tr>
+<td><code>long</code></td>
+<td>≥ 32 bits, ≥ <code>int</code></td>
+<td>8 bytes = 64 bits ✓</td>
+</tr>
+<tr>
+<td><code>long long</code></td>
+<td>≥ 64 bits, ≥ <code>long</code></td>
+<td>8 bytes = 64 bits ✓</td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td>not specified</td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td>at least the precision of <code>float</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>long double</code></td>
+<td>at least the precision of <code>double</code></td>
+<td>16</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>sizeof(short) ≤ sizeof(int) ≤ sizeof(long) ≤ sizeof(long long)</code> holds.
+<code>long</code> and <code>long long</code> are both 8 bytes here: equal sizes are allowed.</p>
+<p><strong>Sizes beyond the guarantees are implementation-defined.</strong> The platform's
+data model decides them:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Target</th>
+<th>Data model</th>
+<th><code>sizeof(long)</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x86-64 Linux</td>
+<td>LP64</td>
+<td>8</td>
+</tr>
+<tr>
+<td>x86-64 Windows</td>
+<td>LLP64</td>
+<td>4</td>
+</tr>
+</tbody>
+</table></div>
+<p>Checked with Clang 18: <code>int main() { return sizeof(long); }</code> compiles to
+<code>mov eax, 8</code> for <code>x86_64-pc-linux-gnu</code> and <code>mov eax, 4</code> for
+<code>x86_64-pc-windows-msvc</code>. Same processor, same compiler, different target.</p>
+<h3>Example</h3>
+<pre><code class="language-cpp">int number{65};
+char code{65};
+std::cout &lt;&lt; number &lt;&lt; '\n';   // 65
+std::cout &lt;&lt; code &lt;&lt; '\n';     // A
+</code></pre>
+<p>Both objects hold the value 65, and the byte containing <code>01000001</code> matches.
+The type and size differ: <code>int</code> is 4 bytes, <code>char</code> is 1 byte here.</p>
+<h3>How the program works</h3>
+<p><code>main.cpp</code> prints <code>sizeof</code> for all nine types, then prints the value 65 as an
+<code>int</code> and as a <code>char</code> to show that the type decides how the value is printed.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Assuming <code>long</code> is 8 bytes everywhere</td>
+<td>It is 4 bytes on Windows</td>
+<td>Rely only on guaranteed sizes</td>
+</tr>
+<tr>
+<td>Reading <code>sizeof(count)</code> as the value</td>
+<td><code>sizeof</code> gives bytes, not contents</td>
+<td><code>sizeof(x)</code> = bytes <code>x</code> occupies</td>
+</tr>
+<tr>
+<td><code>sizeof int</code></td>
+<td>A type name needs parentheses</td>
+<td><code>sizeof(int)</code></td>
+</tr>
+<tr>
+<td><code>int average{7.5};</code></td>
+<td><code>int</code> cannot hold a fraction</td>
+<td><code>double average{7.5};</code></td>
+</tr>
+<tr>
+<td><code>void nothing;</code></td>
+<td><code>void</code> has no value and no size</td>
+<td><code>void</code> is not an object type</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>The type gives the bits their meaning. Know which sizes the standard guarantees
+and which are only true on your platform.</p>
+<h3>Standard</h3>
+<p>C++23 (<code>long long</code> guaranteed since C++11; <code>char8_t</code> since C++20).</p></section><section class="topic" id="t12"><h2><span class="num">12</span>Integer and floating-point types</h2><p class="folder">01-cpp-fundamentals/12-integer-and-floating-point-types</p><h3>What is it?</h3>
+<p>A fixed number of bits can hold only a limited set of values.</p>
+<ul>
+<li><strong>Integer types</strong> store whole numbers <strong>exactly</strong>, within a <strong>range</strong>.</li>
+<li><strong>signed</strong> (the default): negative and positive values.</li>
+<li><strong>unsigned</strong>: zero and positive values only.</li>
+<li><strong>Floating-point types</strong> store numbers with fractions over a huge range,
+  but only <strong>approximately</strong>, with limited <strong>precision</strong>.</li>
+</ul>
+<p>Integers are exact but narrow; floating-point types are wide but approximate.</p>
+<h3>Why does it matter?</h3>
+<p>C++ integers never grow to fit a value, and most decimal fractions cannot be
+stored exactly. Choosing a type means knowing what it can represent, not just
+how big it is.</p>
+<h3>Signed vs. unsigned: the top bit</h3>
+<p>Each bit is a place value. In <strong>signed</strong> (two's complement, required since
+C++20), the top place is worth <strong>minus</strong> its usual value.</p>
+<p>3-bit example:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bits</th>
+<th>Unsigned (+4, 2, 1)</th>
+<th>Signed (−4, 2, 1)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>000</code></td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>011</code></td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>100</code></td>
+<td>4</td>
+<td>−4</td>
+</tr>
+<tr>
+<td><code>111</code></td>
+<td>7</td>
+<td>−1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Both forms have the same size and the same <strong>number</strong> of values (8). Signed
+gives up 4 to 7 to represent −4 to −1.</p>
+<p>8-bit: <code>11111111</code> is 255 unsigned (+128 + 127) and −1 signed (−128 + 127).
+<code>01111111</code> is 127 in both, because its top bit is 0.</p>
+<h3>Integer ranges</h3>
+<p>For an <strong>n-bit</strong> integer:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>signed</td>
+<td>−2ⁿ⁻¹ to 2ⁿ⁻¹ − 1</td>
+</tr>
+<tr>
+<td>unsigned</td>
+<td>0 to 2ⁿ − 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>The signed maximum is 2ⁿ⁻¹ − 1 because one of the 2ⁿ⁻¹ non-negative patterns is 0.</p>
+<p>Hand check for <code>short</code> (16 bits): 2¹⁵ = 32,768, so −32,768 to 32,767. ✓</p>
+<p>Measured on x86-64 Linux with <code>std::numeric_limits</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>short</code></td>
+<td>−32,768 to 32,767</td>
+</tr>
+<tr>
+<td><code>unsigned short</code></td>
+<td>0 to 65,535</td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td>−2,147,483,648 to 2,147,483,647</td>
+</tr>
+<tr>
+<td><code>unsigned int</code></td>
+<td>0 to 4,294,967,295</td>
+</tr>
+<tr>
+<td><code>long long</code></td>
+<td>−9,223,372,036,854,775,808 to 9,223,372,036,854,775,807</td>
+</tr>
+<tr>
+<td><code>unsigned long long</code></td>
+<td>0 to 18,446,744,073,709,551,615</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Floating-point precision</h3>
+<p>A <code>double</code> is stored like scientific notation in binary:
+1 sign bit, 11 exponent bits, 52 fraction bits (IEEE 754 on this platform).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th><code>digits10</code> (digits guaranteed to survive)</th>
+<th>Range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>float</code></td>
+<td>6</td>
+<td>±3.40282 × 10³⁸</td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td>15</td>
+<td>±1.79769 × 10³⁰⁸</td>
+</tr>
+</tbody>
+</table></div>
+<p>Only fractions built from halves (½, ¼, ⅛, …) are exact. 0.1 is 1/10, which
+cannot be built from a finite sum of halves, so it is rounded:</p>
+<pre><code class="language-text">0.1 is stored as 0.10000000000000001
+0.2 is stored as 0.20000000000000001
+0.3 is stored as 0.29999999999999999
+0.4 is stored as 0.40000000000000002
+0.5 is stored as 0.5
+</code></pre>
+<p>A <code>float</code> represents every whole number up to 2²⁴ = 16,777,216. Above that,
+<code>float</code> values are 2 apart, so <code>float big{16777217};</code> is rejected: the value
+would change.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int worldPopulation{8'000'000'000};</code></td>
+<td>Too large for <code>int</code></td>
+<td><code>long long</code></td>
+</tr>
+<tr>
+<td><code>unsigned</code> because "it can't be negative"</td>
+<td><code>0 - 1</code> wraps to the maximum</td>
+<td>Signed types for arithmetic</td>
+</tr>
+<tr>
+<td>Treating 0.1 as exact</td>
+<td>It is rounded</td>
+<td>Integers for exact amounts (cents)</td>
+</tr>
+<tr>
+<td><code>float</code> by default</td>
+<td>Only ~6–7 digits</td>
+<td><code>double</code> by default</td>
+</tr>
+<tr>
+<td><code>numeric_limits&lt;double&gt;::min()</code> as most negative</td>
+<td>It is the smallest positive value</td>
+<td><code>lowest()</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>UB watch</h3>
+<p>Unsigned arithmetic wraps around modulo 2ⁿ, which is defined. <strong>Signed
+overflow is undefined behavior.</strong> Covered in detail in topic 18.</p>
+<h3>Key takeaway</h3>
+<p>Integers are exact within a range; floating-point values are approximate
+within a precision. Pick the type whose range and precision fit the value.</p>
+<h3>Standard</h3>
+<p>C++23 (two's complement required since C++20; <code>long long</code> since C++11;
+digit separators such as <code>8'000'000'000</code> since C++14).</p></section><section class="topic" id="t13"><h2><span class="num">13</span>char, bool, and void</h2><p class="folder">01-cpp-fundamentals/13-char-bool-and-void</p><h3>What is it?</h3>
+<ul>
+<li><strong><code>char</code></strong>: the smallest integer type, exactly 1 byte. It stores a number (a
+  character code); <code>std::cout</code> prints it as the character with that code.</li>
+<li><strong><code>bool</code></strong>: holds <code>true</code> or <code>false</code>. It is an integral type: <code>true</code> converts
+  to 1 and <code>false</code> to 0.</li>
+<li><strong><code>void</code></strong>: means "no value". It is an incomplete type, so no object can have it.</li>
+</ul>
+<h3>Why does it matter?</h3>
+<p>Text is stored as numbers, conditions need a yes/no type, and the type system
+needs a way to say "nothing here". <code>char</code> is also C++'s byte type, and its
+signedness differs between platforms, which is a real portability trap.</p>
+<h3>char stores numbers</h3>
+<p><code>char letter{'A'};</code> and <code>char code{65};</code> store the same <code>char</code> value: 65, the bit
+pattern <code>01000001</code>. Both print as <code>A</code> because the type is <code>char</code>. Converting to
+<code>int</code> prints the number: <code>static_cast&lt;int&gt;(letter)</code> gives 65.</p>
+<h3>Three narrow character types</h3>
+<p><code>char</code>, <code>signed char</code>, and <code>unsigned char</code> are three distinct types. Plain <code>char</code>
+behaves like one of the other two; the platform decides which.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Range here (x86-64 Linux)</th>
+<th>Range on ARM Linux</th>
+<th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>char</code></td>
+<td>−128 to 127 (signed)</td>
+<td>0 to 255</td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>signed char</code></td>
+<td>−128 to 127</td>
+<td>−128 to 127</td>
+<td>small signed numbers</td>
+</tr>
+<tr>
+<td><code>unsigned char</code></td>
+<td>0 to 255</td>
+<td>0 to 255</td>
+<td>raw bytes</td>
+</tr>
+</tbody>
+</table></div>
+<p>The same bits in two types, measured here:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Bits <code>11001000</code></th>
+<th>Working</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>as <code>unsigned char</code></td>
+<td>128 + 64 + 8</td>
+<td>200</td>
+</tr>
+<tr>
+<td>as <code>char</code> (signed here)</td>
+<td>−128 + 64 + 8</td>
+<td>−56</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Use <code>unsigned char</code> for raw bytes.</strong> Its meaning is the same on every platform.</p>
+<h3>bool</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>std::cout &lt;&lt; isReady;</code></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>std::cout &lt;&lt; std::boolalpha &lt;&lt; isReady;</code></td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>sizeof(bool)</code></td>
+<td><code>1</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>std::boolalpha</code> changes only the printing, not the value, and stays in effect
+until <code>std::noboolalpha</code>.</p>
+<h3>Example output</h3>
+<pre><code class="language-text">letter as a character: A
+letter as a number:    65
+char is signed here:   true
+char:          -128 to 127
+signed char:   -128 to 127
+unsigned char: 0 to 255
+11001000 as unsigned char: 200
+11001000 as char:          -56
+isReady (default):   1
+isReady (boolalpha): true
+sizeof(bool): 1
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>char</code> for raw bytes</td>
+<td>Bytes ≥ 128 are negative where <code>char</code> is signed</td>
+<td><code>unsigned char</code></td>
+</tr>
+<tr>
+<td><code>char c{200};</code></td>
+<td>200 does not fit a signed <code>char</code></td>
+<td><code>unsigned char c{200};</code></td>
+</tr>
+<tr>
+<td><code>char cf{11001000};</code></td>
+<td>Decimal eleven million, not binary</td>
+<td><code>0b11001000</code> (topic 14)</td>
+</tr>
+<tr>
+<td>Printing a <code>char</code> as a number</td>
+<td><code>std::cout</code> prints the character</td>
+<td><code>static_cast&lt;int&gt;(c)</code></td>
+</tr>
+<tr>
+<td><code>bool flag{5};</code></td>
+<td>A <code>bool</code> can only be 0 or 1</td>
+<td><code>bool flag{true};</code></td>
+</tr>
+<tr>
+<td><code>void nothing;</code></td>
+<td><code>void</code> has no value and no size</td>
+<td><code>void</code> is not an object type</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p><code>char</code> stores numbers, <code>bool</code> stores yes or no, and <code>void</code> stores nothing. Use
+<code>unsigned char</code> for raw bytes, because plain <code>char</code> signedness depends on the platform.</p>
+<h3>Standard</h3>
+<p>C++23 (binary literals <code>0b</code> since C++14; conversion of out-of-range values to
+signed types is defined as keeping the bit pattern since C++20).</p></section><section class="topic" id="t14"><h2><span class="num">14</span>Literals</h2><p class="folder">01-cpp-fundamentals/14-literals</p><h3>What is it?</h3>
+<p>A <strong>literal</strong> is a value written directly in source code: <code>42</code>, <code>3.14</code>, <code>'A'</code>,
+<code>"hi"</code>, <code>true</code>. <strong>Every literal has a type</strong>, decided by how it is written.</p>
+<h3>Why does it matter?</h3>
+<p>The literal's type drives conversions, narrowing checks, and the code the compiler
+generates. Some notations are traps: a leading <code>0</code> means octal, and a backslash
+inside a string starts an escape sequence.</p>
+<h3>Integer literals: one value, four notations</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Literal</th>
+<th>Notation</th>
+<th>Working</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>255</code></td>
+<td>decimal</td>
+<td>2×100 + 5×10 + 5</td>
+<td>255</td>
+</tr>
+<tr>
+<td><code>0xFF</code></td>
+<td>hex (base 16)</td>
+<td>15×16 + 15</td>
+<td>255</td>
+</tr>
+<tr>
+<td><code>0377</code></td>
+<td>octal (base 8)</td>
+<td>3×64 + 7×8 + 7</td>
+<td>255</td>
+</tr>
+<tr>
+<td><code>0b11111111</code></td>
+<td>binary (base 2)</td>
+<td>128 + 64 + … + 1</td>
+<td>255</td>
+</tr>
+</tbody>
+</table></div>
+<p>All four are the same <code>int</code> value. The notation disappears after compilation.
+<code>1'000'000</code> uses digit separators (C++14); they are ignored by the compiler.</p>
+<p>The same digits with different prefixes:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Literal</th>
+<th>Notation</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>0b10</code></td>
+<td>binary</td>
+<td>2</td>
+</tr>
+<tr>
+<td><code>010</code></td>
+<td>octal</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>10</code></td>
+<td>decimal</td>
+<td>10</td>
+</tr>
+<tr>
+<td><code>0x10</code></td>
+<td>hex</td>
+<td>16</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Every literal has a type</h3>
+<p>Measured with <code>sizeof</code> on x86-64 Linux:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Literal</th>
+<th>Type</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>42</code></td>
+<td><code>int</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>42U</code></td>
+<td><code>unsigned int</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>42L</code></td>
+<td><code>long</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>42LL</code></td>
+<td><code>long long</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>42uz</code></td>
+<td><code>std::size_t</code> (C++23)</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>3000000000</code></td>
+<td><code>long</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>0.1f</code></td>
+<td><code>float</code></td>
+<td>4</td>
+</tr>
+<tr>
+<td><code>0.1</code></td>
+<td><code>double</code></td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>0.1L</code></td>
+<td><code>long double</code></td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>'A'</code></td>
+<td><code>char</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>"hi"</code></td>
+<td><code>const char[3]</code></td>
+<td>3</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>An unsuffixed decimal literal takes the first type that fits: <code>int</code>, then
+  <code>long</code>, then <code>long long</code>. <code>3000000000</code> does not fit <code>int</code>, so it is a <code>long</code>.</li>
+<li>Floating-point literals are <code>double</code> unless suffixed with <code>f</code> or <code>L</code>.</li>
+<li><code>uz</code> gives <code>std::size_t</code>, the same type <code>sizeof</code> produces.</li>
+<li><code>"hi"</code> is 3 bytes: <code>h</code>, <code>i</code>, and the terminating <code>\0</code>.</li>
+</ul>
+<h3>Escape sequences</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Escape</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>\n</code></td>
+<td>newline</td>
+</tr>
+<tr>
+<td><code>\t</code></td>
+<td>tab</td>
+</tr>
+<tr>
+<td><code>\\</code></td>
+<td>backslash</td>
+</tr>
+<tr>
+<td><code>\'</code></td>
+<td>single quote</td>
+</tr>
+<tr>
+<td><code>\"</code></td>
+<td>double quote</td>
+</tr>
+<tr>
+<td><code>\0</code></td>
+<td>null character</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>"C:\new\table"</code> prints <code>C:</code>, a newline, <code>ew</code>, a tab, and <code>able</code>, with no warning.
+Fix it with <code>"C:\\new\\table"</code> or <code>"C:/new/table"</code>.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int code{010};</code></td>
+<td>Leading <code>0</code> means octal: value is 8</td>
+<td><code>int code{10};</code></td>
+</tr>
+<tr>
+<td><code>"C:\new\table"</code></td>
+<td><code>\n</code> and <code>\t</code> become newline and tab</td>
+<td><code>"C:\\new\\table"</code></td>
+</tr>
+<tr>
+<td><code>char letter{"A"};</code></td>
+<td><code>"A"</code> is a string, not a <code>char</code></td>
+<td><code>char letter{'A'};</code></td>
+</tr>
+<tr>
+<td><code>float gain{0.75};</code></td>
+<td>Converts a <code>double</code> literal</td>
+<td><code>float gain{0.75f};</code></td>
+</tr>
+<tr>
+<td><code>int big{3000000000};</code></td>
+<td>The literal is a <code>long</code> and does not fit</td>
+<td><code>long long big{3000000000};</code></td>
+</tr>
+<tr>
+<td><code>unsigned int n{-1};</code></td>
+<td>Narrowing: −1 is not unsigned</td>
+<td>Use a signed type</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>Every literal has a type. The way you write it (digits, prefix, suffix, quotes)
+decides which.</p>
+<h3>Standard</h3>
+<p>C++23 (binary literals and digit separators since C++14; <code>uz</code> suffix since C++23).</p></section><section class="topic" id="t15"><h2><span class="num">15</span>Assignment</h2><p class="folder">01-cpp-fundamentals/15-assignment</p><h3>What is it?</h3>
+<p><strong>Assignment</strong> replaces the value of an object that already exists.
+<strong>Initialization</strong> gives an object its first value when it is created.</p>
+<pre><code class="language-cpp">int balance{1000};   // initialization: balance is created
+balance = 1500;      // assignment: balance already exists
+</code></pre>
+<h3>Why does it matter?</h3>
+<p>Programs change state over time. Initialization happens once; assignment can
+happen any number of times. The difference matters for <code>const</code> (topic 16) and
+class types, and plain assignment does not protect against narrowing.</p>
+<h3>Syntax</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x = value;</code></td>
+<td>store <code>value</code> in <code>x</code></td>
+</tr>
+<tr>
+<td><code>x = {value};</code></td>
+<td>same, but rejects narrowing</td>
+</tr>
+<tr>
+<td><code>a = b = 42;</code></td>
+<td>right to left: <code>a = (b = 42)</code></td>
+</tr>
+<tr>
+<td><code>x += 5;</code></td>
+<td><code>x = x + 5;</code></td>
+</tr>
+<tr>
+<td><code>x -= 5;</code></td>
+<td><code>x = x - 5;</code></td>
+</tr>
+<tr>
+<td><code>x *= 5;</code></td>
+<td><code>x = x * 5;</code></td>
+</tr>
+<tr>
+<td><code>x /= 5;</code></td>
+<td><code>x = x / 5;</code></td>
+</tr>
+<tr>
+<td><code>x %= 5;</code></td>
+<td><code>x = x % 5;</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The left side must be a <strong>modifiable lvalue</strong>: an object that can be changed.</p>
+<h3>Narrowing: assignment does not protect you</h3>
+<p>Tested with <code>int p{};</code> and the value 7.8:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Build</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>p = 7.8;</code></td>
+<td><code>cxx</code></td>
+<td>compiles silently; <code>p</code> is 7</td>
+</tr>
+<tr>
+<td><code>p = 7.8;</code></td>
+<td><code>cxx -Wconversion</code></td>
+<td>warning: value changes from 7.8 to 7</td>
+</tr>
+<tr>
+<td><code>p = {7.8};</code></td>
+<td><code>cxx</code></td>
+<td>error: narrowing conversion</td>
+</tr>
+</tbody>
+</table></div>
+<p>The compiler reports 7.8 as <code>7.7999999999999998</code>: the <code>double</code> literal is not
+exact (topic 12).</p>
+<h3>Trace: each assignment changes only its left side</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>After line</th>
+<th>x</th>
+<th>y</th>
+<th>z</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>start</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>x = y;</code></td>
+<td>2</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>y = z;</code></td>
+<td>2</td>
+<td>3</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>z = x;</code></td>
+<td>2</td>
+<td>3</td>
+<td>2</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>a = b</code> copies the current value; the two objects stay separate.</p>
+<h3>Example output</h3>
+<pre><code class="language-text">initialized:    1000
+assigned 1500:  1500
+after += 250:   1750
+after -= 100:   1650
+a = b = 42:     a = 42, b = 42
+p = 7.8 gives:  7
+trace result:   x = 2, y = 3, z = 2
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>p = 7.8;</code></td>
+<td>Narrows silently to 7</td>
+<td><code>p = {7.8};</code> or <code>-Wconversion</code></td>
+</tr>
+<tr>
+<td><code>5 = balance;</code></td>
+<td>A literal is not an lvalue</td>
+<td><code>balance = 5;</code></td>
+</tr>
+<tr>
+<td><code>balance + = 5;</code></td>
+<td><code>+=</code> is one token: "expected primary-expression"</td>
+<td><code>balance += 5;</code></td>
+</tr>
+<tr>
+<td><code>int n = 0;</code> read as assignment</td>
+<td>It is initialization</td>
+<td><code>=</code> in a definition initializes</td>
+</tr>
+<tr>
+<td>Tracing assignments loosely</td>
+<td>Only the left side changes</td>
+<td>Trace one line at a time</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>Initialization creates an object with a value; assignment replaces the value of
+an existing object. Plain <code>=</code> narrows silently, so use braces or <code>-Wconversion</code>.</p>
+<h3>Standard</h3>
+<p>C++23 (brace assignment rejects narrowing since C++11).</p></section><section class="topic" id="t16"><h2><span class="num">16</span>const</h2><p class="folder">01-cpp-fundamentals/16-const</p><h3>What is it?</h3>
+<p><code>const</code> makes an object <strong>read-only after initialization</strong>. A <code>const</code> object can
+be initialized, but never assigned.</p>
+<pre><code class="language-cpp">const int maxItems{50};
+maxItems = 60;   // error: assignment of read-only variable 'maxItems'
+</code></pre>
+<h3>Why does it matter?</h3>
+<p>Values that should never change (limits, rates, IDs) become rules the compiler
+enforces, not comments. It documents intent, and C++ practice is to make objects
+<code>const</code> by default.</p>
+<h3>Rules</h3>
+<p>Tested with <code>cxx</code> (GCC 13, <code>-std=c++23</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>const int limit;</code></td>
+<td>error: uninitialized 'const limit'</td>
+</tr>
+<tr>
+<td><code>maxItems = 60;</code></td>
+<td>error: assignment of read-only variable 'maxItems'</td>
+</tr>
+<tr>
+<td><code>maxItems += 1;</code></td>
+<td>error: assignment of read-only variable 'maxItems'</td>
+</tr>
+<tr>
+<td><code>std::cin &gt;&gt; maxItems;</code></td>
+<td>error: no match for 'operator&gt;&gt;' ... discards qualifiers</td>
+</tr>
+<tr>
+<td><code>const int q{input};</code></td>
+<td>allowed: the value can come from run time</td>
+</tr>
+</tbody>
+</table></div>
+<h3>const is not compile-time</h3>
+<p><code>const</code> means "not modifiable", not "known at compile time". The value can come
+from user input. Compile-time values are <code>constexpr</code> (Stage 10).</p>
+<h3>Pattern: read input, then copy into a const</h3>
+<pre><code class="language-cpp">int quantityInput{};
+std::cin &gt;&gt; quantityInput;                  // std::cin needs a modifiable variable
+const int orderedQuantity{quantityInput};   // fixed from here on
+</code></pre>
+<h3>Reading a long error message</h3>
+<p><code>std::cin &gt;&gt; quantity;</code> with a <code>const int</code> produces a very long error. Read the
+first error, then search for the line naming your type:</p>
+<pre><code class="language-text">error: no match for 'operator&gt;&gt;' (operand types are 'std::istream' and 'const int')
+error: binding reference of type 'int&amp;' to 'const int' discards qualifiers
+</code></pre>
+<p><code>std::cin</code> needs write access to the variable; giving it would discard <code>const</code>.</p>
+<h3>Should it be const?</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Value</th>
+<th>const?</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Days in a week</td>
+<td>yes</td>
+<td>never changes</td>
+</tr>
+<tr>
+<td>Loop counter</td>
+<td>no</td>
+<td>it is updated; <code>const</code> would not compile</td>
+</tr>
+<tr>
+<td>Birth year, read once</td>
+<td>yes</td>
+<td>read into a normal variable, then copy</td>
+</tr>
+<tr>
+<td>Running total of a cart</td>
+<td>no</td>
+<td>it changes with each item</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Example output</h3>
+<pre><code class="language-text">Enter the quantity: 7
+max items:        50
+tax rate:         0.18
+currency:         $
+ordered quantity: 7
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>const int limit;</code></td>
+<td>A const must be initialized</td>
+<td><code>const int limit{10};</code></td>
+</tr>
+<tr>
+<td>Modifying a const</td>
+<td>Assignment and <code>+=</code> are rejected</td>
+<td>Remove <code>const</code> only if it must change</td>
+</tr>
+<tr>
+<td>Magic numbers (<code>amount * 0.18</code>)</td>
+<td>Meaning unclear, hard to change</td>
+<td><code>const double taxRate{0.18};</code></td>
+</tr>
+<tr>
+<td><code>const</code> input variable</td>
+<td><code>std::cin</code> cannot write into it</td>
+<td>Read first, then copy into a const</td>
+</tr>
+<tr>
+<td>Thinking const = compile-time</td>
+<td>Run-time values are allowed</td>
+<td>Compile-time is <code>constexpr</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p><code>const</code> objects are initialized once and never changed. Make values <code>const</code>
+unless they need to change.</p>
+<h3>Standard</h3>
+<p>C++23 (<code>const</code> has existed since the first C++ standard).</p></section><section class="topic" id="t17"><h2><span class="num">17</span>Type inference with auto</h2><p class="folder">01-cpp-fundamentals/17-type-inference-with-auto</p><h3>What is it?</h3>
+<p><code>auto</code> tells the compiler to <strong>deduce a variable's type from its initializer</strong>.
+The type is fixed at compile time, exactly as if it had been written by hand.</p>
+<pre><code class="language-cpp">auto count{42};      // int
+auto price{19.99};   // double
+</code></pre>
+<h3>Why does it matter?</h3>
+<p>It removes noise when the type is obvious, and makes long type names (common with
+the Standard Library) readable. But it copies the initializer's type exactly, so
+literal types, suffixes, and <code>const</code> rules decide the result.</p>
+<h3>What auto deduces</h3>
+<p>Measured with <code>sizeof</code> on x86-64 Linux:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Declaration</th>
+<th>Deduced type</th>
+<th>Size</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auto count{42};</code></td>
+<td><code>int</code></td>
+<td>4</td>
+<td><code>int</code> literal</td>
+</tr>
+<tr>
+<td><code>auto total{3000000000};</code></td>
+<td><code>long</code></td>
+<td>8</td>
+<td>too big for <code>int</code></td>
+</tr>
+<tr>
+<td><code>auto price{19.99};</code></td>
+<td><code>double</code></td>
+<td>8</td>
+<td>unsuffixed floating literal</td>
+</tr>
+<tr>
+<td><code>auto ratio{0.5f};</code></td>
+<td><code>float</code></td>
+<td>4</td>
+<td><code>f</code> suffix</td>
+</tr>
+<tr>
+<td><code>auto grade{'A'};</code></td>
+<td><code>char</code></td>
+<td>1</td>
+<td>character literal</td>
+</tr>
+<tr>
+<td><code>auto ready{true};</code></td>
+<td><code>bool</code></td>
+<td>1</td>
+<td>boolean literal</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Rules</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auto x;</code></td>
+<td>error: declaration of 'auto x' has no initializer</td>
+</tr>
+<tr>
+<td><code>auto n{5}; n = 3.9;</code></td>
+<td><code>n</code> stays <code>int</code>; the assignment converts 3.9 to 3</td>
+</tr>
+<tr>
+<td><code>const int limit{10}; auto copy{limit};</code></td>
+<td><code>copy</code> is <code>int</code>, not <code>const</code>: top-level const is dropped</td>
+</tr>
+<tr>
+<td><code>const auto copy{limit}; copy = 20;</code></td>
+<td>error: assignment of read-only variable 'copy'</td>
+</tr>
+<tr>
+<td><code>auto x{5};</code></td>
+<td><code>int</code></td>
+</tr>
+<tr>
+<td><code>auto x = {5};</code></td>
+<td><code>std::initializer_list&lt;int&gt;</code>, not <code>int</code></td>
+</tr>
+<tr>
+<td><code>auto y{1, 2};</code></td>
+<td>error: direct-list-initialization of 'auto' requires exactly one element</td>
+</tr>
+</tbody>
+</table></div>
+<p>GCC even suggests the fix for the last one: "for deduction to 'std::initializer_list',
+use copy-list-initialization (i.e. add '=' before the '{')".</p>
+<h3>When to use auto</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Choice</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int count{0};</code></td>
+<td>either</td>
+<td>the type is obvious both ways</td>
+</tr>
+<tr>
+<td>A <code>float</code> audio sample</td>
+<td><code>float</code></td>
+<td>with <code>auto</code>, a missing <code>f</code> silently gives <code>double</code></td>
+</tr>
+<tr>
+<td>A long Standard Library type name</td>
+<td><code>auto</code></td>
+<td>the type name is noise</td>
+</tr>
+</tbody>
+</table></div>
+<p>Use <code>auto</code> when the type is obvious or too long to write; write the type when it
+carries important meaning.</p>
+<h3>Example output</h3>
+<pre><code class="language-text">sizeof(count): 4
+sizeof(total): 8
+sizeof(price): 8
+sizeof(ratio): 4
+sizeof(grade): 1
+sizeof(ready): 1
+n after n = 3.9: 3
+copy: 20
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>auto x;</code></td>
+<td>Nothing to deduce from</td>
+<td>Always initialize</td>
+</tr>
+<tr>
+<td>Expecting the type to change</td>
+<td><code>auto</code> deduces once</td>
+<td>Initialize with the type you need</td>
+</tr>
+<tr>
+<td><code>auto x = {5};</code></td>
+<td>Deduces <code>std::initializer_list&lt;int&gt;</code></td>
+<td><code>auto x{5};</code></td>
+</tr>
+<tr>
+<td>Expecting <code>auto</code> to keep const</td>
+<td>Top-level const is dropped</td>
+<td><code>const auto</code></td>
+</tr>
+<tr>
+<td><code>auto</code> everywhere</td>
+<td>Hides meaningful types</td>
+<td>Write the type when it matters</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p><code>auto</code> copies the initializer's type exactly, once, at compile time. Use it for
+clarity, not to avoid thinking about types.</p>
+<h3>Standard</h3>
+<p>C++23 (<code>auto</code> deduction since C++11; <code>auto x{5}</code> deducing <code>int</code> since C++17).</p></section><section class="topic" id="t18"><h2><span class="num">18</span>Arithmetic, comparison, and logical operators</h2><p class="folder">01-cpp-fundamentals/18-operators</p><h3>What is it?</h3>
+<p>Operators combine values into a new value.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Family</th>
+<th>Operators</th>
+<th>Result</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arithmetic</td>
+<td><code>+</code> <code>-</code> <code>*</code> <code>/</code> <code>%</code></td>
+<td>a number</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Comparison</td>
+<td><code>==</code> <code>!=</code> <code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td>
+<td><code>bool</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Logical</td>
+<td><code>&amp;&amp;</code> <code>\                     | \        |</code> <code>!</code></td>
+<td><code>bool</code></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Why does it matter?</h3>
+<p>Every calculation and decision uses operators, and C++ adds no safety checks:
+integer division drops fractions, signed overflow is undefined behavior, and
+<code>1 &lt; x &lt; 3</code> compiles but does not check a range.</p>
+<h3>Arithmetic results</h3>
+<p>Tested with <code>cxx</code> (GCC 13, <code>-std=c++23</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Expression</th>
+<th>Result</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>17 / 5</code></td>
+<td>3</td>
+<td>integer division: fraction dropped</td>
+</tr>
+<tr>
+<td><code>17 % 5</code></td>
+<td>2</td>
+<td>remainder</td>
+</tr>
+<tr>
+<td><code>17.0 / 5</code></td>
+<td>3.4</td>
+<td>one <code>double</code> operand</td>
+</tr>
+<tr>
+<td><code>-17 / 5</code></td>
+<td>-3</td>
+<td>truncates toward zero</td>
+</tr>
+<tr>
+<td><code>-17 % 5</code></td>
+<td>-2</td>
+<td>takes the sign of the left operand</td>
+</tr>
+<tr>
+<td><code>2 + 3 * 4</code></td>
+<td>14</td>
+<td><code>*</code> before <code>+</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The <strong>operands'</strong> types decide the calculation, not the variable the result goes into.</p>
+<h3>Precedence (high to low)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Operators</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><code>!</code>, unary <code>-</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>*</code> <code>/</code> <code>%</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>+</code> <code>-</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>==</code> <code>!=</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>&amp;&amp;</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>\                | \   |</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>=</code> <code>+=</code> ...</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>When in doubt, add parentheses.</p>
+<h3>Signed overflow and UBSan</h3>
+<pre><code class="language-cpp">int big{2147483647};
+int result{big + 1};
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Build</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cxx</code></td>
+<td>prints -2147483648, no warning</td>
+</tr>
+<tr>
+<td><code>cxx -g -fsanitize=undefined</code></td>
+<td><code>runtime error: signed integer overflow: 2147483647 + 1 cannot be represented in type 'int'</code></td>
+</tr>
+<tr>
+<td><code>long long</code> instead of <code>int</code></td>
+<td>prints 2147483648, clean under UBSan</td>
+</tr>
+</tbody>
+</table></div>
+<p>Signed overflow has no defined result in C++; seeing it wrap once proves nothing.
+UBSan detects it at the exact line.</p>
+<h3>Short-circuit: order matters</h3>
+<p>With <code>d = 0</code>, built with UBSan:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Expression</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>d != 0 &amp;&amp; 10 / d &gt; 1</code></td>
+<td><code>false</code>: the division never runs</td>
+</tr>
+<tr>
+<td><code>10 / d &gt; 1 &amp;&amp; d != 0</code></td>
+<td><code>runtime error: division by zero</code>, then the program crashes</td>
+</tr>
+</tbody>
+</table></div>
+<p>A guard only protects what comes after it.</p>
+<h3>The chained-comparison trap</h3>
+<p><code>(5 &lt; x &lt; 3)</code> with <code>x = 2</code> prints <code>true</code>: it means <code>(5 &lt; x) &lt; 3</code>, so <code>false</code>
+becomes 0, and <code>0 &lt; 3</code> is true. GCC warns:</p>
+<pre><code class="language-text">warning: comparison of constant '3' with boolean expression is always true
+warning: comparisons like 'X&lt;=Y&lt;=Z' do not have their mathematical meaning
+</code></pre>
+<p>A range needs two comparisons: <code>(1 &lt; x &amp;&amp; x &lt; 3)</code>. Test inside, below, and above:
+2 → true, 0 → false, 5 → false.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>double avg{total / count};</code></td>
+<td>Integer division happens first</td>
+<td>Make one operand floating-point</td>
+</tr>
+<tr>
+<td><code>int</code> overflow</td>
+<td>Undefined behavior, silent</td>
+<td>Wider type; test with UBSan</td>
+</tr>
+<tr>
+<td><code>0.1 + 0.2 == 0.3</code></td>
+<td><code>false</code> because of rounding</td>
+<td>Compare with a tolerance</td>
+</tr>
+<tr>
+<td><code>1 &lt; x &lt; 3</code></td>
+<td>Always true or false, not a range</td>
+<td><code>1 &lt; x &amp;&amp; x &lt; 3</code></td>
+</tr>
+<tr>
+<td><code>(x &lt; 3) &amp;&amp; (x &lt; 5)</code> as a range</td>
+<td>Just means <code>x &lt; 3</code></td>
+<td>One comparison per bound</td>
+</tr>
+<tr>
+<td><code>10 / d &gt; 1 &amp;&amp; d != 0</code></td>
+<td>Divides before checking</td>
+<td>Put the guard first</td>
+</tr>
+</tbody>
+</table></div>
+<h3>UB watch</h3>
+<p>Signed overflow and integer division by zero are undefined behavior. Build tests
+with <code>-fsanitize=undefined</code> from this topic on.</p>
+<h3>Key takeaway</h3>
+<p>The operands decide the calculation, <code>&amp;&amp;</code> and <code>||</code> stop early, and UBSan finds
+the undefined behavior that normal builds hide.</p>
+<h3>Standard</h3>
+<p>C++23 (<code>%</code> with negative operands truncates toward zero since C++11).</p></section><section class="topic" id="t19"><h2><span class="num">19</span>Type conversions and static_cast</h2><p class="folder">01-cpp-fundamentals/19-type-conversions-and-static-cast</p><h3>What is it?</h3>
+<p>A <strong>conversion</strong> turns a value of one type into another type.</p>
+<ul>
+<li><strong>Implicit</strong>: automatic, whenever C++ needs a different type (<code>7.0 / 2</code>).</li>
+<li><strong>Explicit</strong>: requested with <code>static_cast&lt;Type&gt;(value)</code>.</li>
+</ul>
+<h3>Why does it matter?</h3>
+<p>C++ converts implicitly in many places, and some conversions lose information
+silently. <code>static_cast</code> makes intentional conversions visible; braces and warnings
+catch the accidental ones.</p>
+<h3>Results</h3>
+<p>Tested with <code>cxx</code> (GCC 13, <code>-std=c++23</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Result</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sum / count</code> (25 / 3)</td>
+<td>8</td>
+<td>integer division</td>
+</tr>
+<tr>
+<td><code>static_cast&lt;double&gt;(sum / count)</code></td>
+<td>8</td>
+<td>cast after dividing: too late</td>
+</tr>
+<tr>
+<td><code>static_cast&lt;double&gt;(sum) / count</code></td>
+<td>8.33333</td>
+<td>cast an operand</td>
+</tr>
+<tr>
+<td><code>static_cast&lt;int&gt;(9.99)</code></td>
+<td>9</td>
+<td>truncates toward zero</td>
+</tr>
+<tr>
+<td><code>static_cast&lt;int&gt;(-9.99)</code></td>
+<td>-9</td>
+<td>truncates toward zero</td>
+</tr>
+<tr>
+<td><code>static_cast&lt;int&gt;(0.5)</code></td>
+<td>0</td>
+<td>never rounds</td>
+</tr>
+<tr>
+<td><code>'a' + 1</code></td>
+<td>98</td>
+<td>integer promotion: an <code>int</code></td>
+</tr>
+<tr>
+<td><code>static_cast&lt;char&gt;('a' + 1)</code></td>
+<td>b</td>
+<td>back to <code>char</code></td>
+</tr>
+<tr>
+<td><code>sizeof('a' + 1)</code></td>
+<td>4</td>
+<td>the result is an <code>int</code></td>
+</tr>
+<tr>
+<td><code>-5 &lt; 3u</code></td>
+<td>false</td>
+<td>-5 becomes a huge unsigned value</td>
+</tr>
+</tbody>
+</table></div>
+<h3>The usual arithmetic conversions</h3>
+<ol>
+<li>If either operand is floating-point, the other becomes floating-point.</li>
+<li>Otherwise, small types (<code>char</code>, <code>short</code>, <code>bool</code>) are promoted to <code>int</code>.</li>
+<li>If they still differ, the wider type wins; signed meeting unsigned of the
+   same size becomes <strong>unsigned</strong>.</li>
+</ol>
+<h3>Signed vs unsigned</h3>
+<pre><code class="language-cpp">const int index{-1};
+const unsigned int size{5};
+(index &lt; size)                                              // false, -Wsign-compare
+(index &lt; 0 || static_cast&lt;unsigned int&gt;(index) &lt; size)      // true
+</code></pre>
+<p>The fix is safe because <code>||</code> short-circuits: the cast only runs when <code>index</code> is
+not negative.</p>
+<h3>The sanitizer gap</h3>
+<pre><code class="language-cpp">double big{3e10};
+int bad{static_cast&lt;int&gt;(big)};   // undefined behavior: does not fit int
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Build</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cxx -g -fsanitize=undefined</code></td>
+<td>prints -2147483648, no message</td>
+</tr>
+<tr>
+<td><code>cxx -g -fsanitize=undefined,float-cast-overflow</code></td>
+<td><code>runtime error: 3e+10 is outside the range of representable values of type 'int'</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>A clean sanitizer run only covers the checks that were enabled.</p>
+<h3>static_cast vs C-style casts</h3>
+<p><code>int n = (int)3.7;</code> built with <code>-Wold-style-cast</code>:</p>
+<pre><code class="language-text">warning: use of old-style cast to 'int' [-Wold-style-cast]
+</code></pre>
+<p>GCC suggests the replacement: <code>int n{static_cast&lt;int&gt;(3.7)};</code>. <code>static_cast</code>
+allows only sensible conversions, states intent, and is easy to search for.</p>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>static_cast&lt;double&gt;(total / count)</code></td>
+<td>Division already happened</td>
+<td><code>static_cast&lt;double&gt;(total) / count</code></td>
+</tr>
+<tr>
+<td>Expecting a cast to round</td>
+<td>It truncates</td>
+<td><code>std::round</code></td>
+</tr>
+<tr>
+<td><code>index &lt; size</code> with mixed signedness</td>
+<td>-1 becomes huge</td>
+<td>Guard the negative case first</td>
+</tr>
+<tr>
+<td>Out-of-range double to int</td>
+<td>Undefined behavior</td>
+<td>Check the range; test with float-cast-overflow</td>
+</tr>
+<tr>
+<td><code>(int)x</code></td>
+<td>Hides intent, allows dangerous casts</td>
+<td><code>static_cast&lt;int&gt;(x)</code></td>
+</tr>
+<tr>
+<td>A cast to silence a narrowing error</td>
+<td>Hides a real data loss</td>
+<td>Fix the type instead</td>
+</tr>
+</tbody>
+</table></div>
+<h3>UB watch</h3>
+<p>Converting a floating-point value that does not fit the target integer type is
+undefined behavior. On GCC, <code>-fsanitize=undefined</code> does not report it; add
+<code>float-cast-overflow</code>.</p>
+<h3>Key takeaway</h3>
+<p><code>static_cast</code> makes a conversion explicit, not safe. Cast operands, guard
+signedness, and know which sanitizer checks are enabled.</p>
+<h3>Standard</h3>
+<p>C++23 (signed-to-unsigned conversion is modulo 2ⁿ; C++20 also defines the reverse).</p></section><section class="topic" id="t20"><h2><span class="num">20</span>Block scope</h2><p class="folder">01-cpp-fundamentals/20-block-scope</p><h3>What is it?</h3>
+<p>A <strong>block</strong> is code between <code>{</code> and <code>}</code>. A variable defined inside a block has
+<strong>block scope</strong>: its name can be used from its definition to the closing brace of
+that block, and nowhere else.</p>
+<h3>Why does it matter?</h3>
+<p>Scope limits where a name is visible, so variables cannot be misused far from
+where they belong. In C++, a local variable's <strong>lifetime</strong> also ends at its
+block's <code>}</code>, which is the foundation of RAII (Stage 12).</p>
+<h3>Rules</h3>
+<p>Tested with <code>cxx</code> (GCC 13, <code>-std=c++23</code>):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>{ int y{2}; } y = 3;</code></td>
+<td>error: 'y' was not declared in this scope</td>
+</tr>
+<tr>
+<td><code>w = 5; int w{};</code></td>
+<td>error: 'w' was not declared in this scope</td>
+</tr>
+<tr>
+<td><code>int z{1}; int z{2};</code></td>
+<td>error: redeclaration of 'int z'</td>
+</tr>
+<tr>
+<td><code>int x{1}; { x = 2; }</code></td>
+<td>allowed: inner blocks see outer names</td>
+</tr>
+<tr>
+<td><code>int x{1}; { int x{10}; }</code></td>
+<td>allowed: shadowing, a separate object</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Shadowing</h3>
+<pre><code class="language-cpp">int count{0};
+{
+    count = 5;          // changes the outer count
+    int count{9};       // a new count hides the outer one from here on
+}
+// outer count is 5
+</code></pre>
+<p>Output: <code>5</code>, <code>9</code>, <code>5</code>. The inner <code>count</code> is a separate object; the outer one is
+only hidden, never changed by it.</p>
+<p>Shadowing compiles <strong>without a warning</strong> under <code>-Wall -Wextra -Wpedantic</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Build</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cxx</code></td>
+<td>no warning</td>
+</tr>
+<tr>
+<td><code>cxx -Wshadow</code></td>
+<td>warning: declaration of 'count' shadows a previous local</td>
+</tr>
+<tr>
+<td><code>-Wshadow=local</code></td>
+<td>same warning, reported as <code>-Wshadow=compatible-local</code></td>
+</tr>
+</tbody>
+</table></div>
+<p><code>-Wshadow=local</code> was added to the <code>cxx</code> alias: it reports one local hiding another
+without the noise full <code>-Wshadow</code> produces later with class members.</p>
+<h3>Scope vs lifetime</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Meaning</th>
+<th>When</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Scope</td>
+<td>where a name can be used</td>
+<td>compile time</td>
+</tr>
+<tr>
+<td>Lifetime</td>
+<td>when an object exists</td>
+<td>run time</td>
+</tr>
+</tbody>
+</table></div>
+<p>For local variables both end at the same <code>}</code>; they diverge later (static locals,
+dynamic memory).</p>
+<h3>Example output</h3>
+<pre><code class="language-text">outer count at start:  0
+after count = 5 inside: 5
+inner temporary:        42
+outer count at end:    5
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Using a variable after its block</td>
+<td>Its scope ended at <code>}</code></td>
+<td>Define it in the block that needs it</td>
+</tr>
+<tr>
+<td><code>int total{5};</code> meant as assignment</td>
+<td>Silent shadowing</td>
+<td>Build with <code>-Wshadow=local</code></td>
+</tr>
+<tr>
+<td>Using a name before its definition</td>
+<td>Scope starts at the definition</td>
+<td>Define first</td>
+</tr>
+<tr>
+<td>Two definitions in one block</td>
+<td>Redeclaration error</td>
+<td>Assign instead</td>
+</tr>
+<tr>
+<td>All variables at the top</td>
+<td>Larger scope than needed</td>
+<td>Smallest scope, closest to first use</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>A name lives from its definition to its block's closing brace. Keep scopes small,
+and let the compiler report shadowing.</p>
+<h3>Standard</h3>
+<p>C++23 (block scope rules are unchanged since the first standard).</p></section><section class="topic" id="t21"><h2><span class="num">21</span>Reading input with std::cin</h2><p class="folder">01-cpp-fundamentals/21-reading-input-with-cin</p><h3>What is it?</h3>
+<p><code>std::cin &gt;&gt; value</code> reads text from standard input and converts it to the
+variable's type. If the text cannot be converted, the stream enters a <strong>fail
+state</strong>. Nothing crashes and nothing is thrown: the program must check.</p>
+<h3>Why does it matter?</h3>
+<p>Input is the part of a program you do not control. A failed stream silently skips
+every later read, and the variable alone cannot tell you whether the read worked.</p>
+<h3>How &gt;&gt; reads an int</h3>
+<ol>
+<li>Skip whitespace.</li>
+<li>Read characters while they can be part of an <code>int</code> (sign, digits).</li>
+<li>Stop at the first character that does not fit, and leave it in the buffer.</li>
+</ol>
+<h3>What happens with each input</h3>
+<p>Two reads into variables initialized to -1, tested with <code>cxx</code> (GCC 13):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Input</th>
+<th>first</th>
+<th>fail after first</th>
+<th>second</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>10 20</code></td>
+<td>10</td>
+<td>false</td>
+<td>20</td>
+<td>normal</td>
+</tr>
+<tr>
+<td><code>abc</code></td>
+<td>0</td>
+<td>true</td>
+<td>-1</td>
+<td>second read skipped: stream is failed</td>
+</tr>
+<tr>
+<td><code>7xyz</code></td>
+<td>7</td>
+<td>false</td>
+<td>0</td>
+<td>partial input succeeds; <code>xyz</code> breaks the next read</td>
+</tr>
+<tr>
+<td><code>4.9</code></td>
+<td>4</td>
+<td>false</td>
+<td>0</td>
+<td><code>.9</code> left behind</td>
+</tr>
+<tr>
+<td><code>99999999999</code></td>
+<td>2147483647</td>
+<td>true</td>
+<td>-1</td>
+<td>overflow stores the limit <strong>and</strong> fails</td>
+</tr>
+<tr>
+<td>(no input)</td>
+<td>-1</td>
+<td>true</td>
+<td>-1</td>
+<td>end of input: variable untouched</td>
+</tr>
+</tbody>
+</table></div>
+<p>Never judge a read by the value. Check the stream: <code>std::cin.fail()</code> or
+<code>if (!(std::cin &gt;&gt; value))</code>.</p>
+<h3>Recovery: clear() then ignore()</h3>
+<p>Input <code>abc</code> then <code>25</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Recovery</th>
+<th>Second read</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>clear()</code> + <code>ignore()</code></td>
+<td>25, fail = false</td>
+<td>the bad line was discarded</td>
+</tr>
+<tr>
+<td><code>clear()</code> only</td>
+<td>0, fail = true</td>
+<td>the second read hit the same <code>abc</code> again</td>
+</tr>
+<tr>
+<td><code>ignore()</code> then <code>clear()</code></td>
+<td>0, fail = true</td>
+<td>a failed stream skips <code>ignore()</code> too</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>clear()</code> resets the state flags; <code>ignore()</code> discards the leftover characters.
+<code>clear()</code> must come first.</p>
+<h3>Final program behaviour</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Input</th>
+<th>Result</th>
+<th>Exit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>25</code></td>
+<td>Accepted: 25</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>abc</code> then <code>25</code></td>
+<td>recovers, Accepted: 25</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>7xyz</code></td>
+<td>Accepted: 7 (partial input succeeds)</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>99999999999</code> then <code>5</code></td>
+<td>first read fails at the limit, Accepted: 5</td>
+<td>0</td>
+</tr>
+<tr>
+<td>(no input)</td>
+<td>value stays -1, eof = true, gives up</td>
+<td>1</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Not checking the read</td>
+<td>Bad input silently becomes 0</td>
+<td><code>if (!(std::cin &gt;&gt; value))</code></td>
+</tr>
+<tr>
+<td>Checking the value (<code>== 0</code>)</td>
+<td>0 is valid; failures can leave other values</td>
+<td>Check the stream state</td>
+</tr>
+<tr>
+<td><code>clear()</code> without <code>ignore()</code></td>
+<td>Reads the same bad text again</td>
+<td><code>clear()</code>, then <code>ignore()</code></td>
+</tr>
+<tr>
+<td><code>ignore()</code> before <code>clear()</code></td>
+<td>A failed stream skips <code>ignore()</code></td>
+<td><code>clear()</code> first</td>
+</tr>
+<tr>
+<td>Assuming <code>42abc</code> fails</td>
+<td>The first read succeeds</td>
+<td>Validate the whole line (Stage 04)</td>
+</tr>
+<tr>
+<td>Never testing empty input</td>
+<td>Every read fails at end of input</td>
+<td>Test with <code>printf "" \| ./main</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>A failed stream skips everything until <code>clear()</code>, and only the stream state, not
+the value, tells you whether a read worked.</p>
+<h3>Coming next</h3>
+<p>Re-asking until the input is valid needs a loop: Stage 02 · 13.</p>
+<h3>Standard</h3>
+<p>C++23 (on conversion failure the value is set to 0, and on overflow to the type's
+limit, since C++11).</p></section><section class="topic" id="t22"><h2><span class="num">22</span>A first look at std::string and std::vector</h2><p class="folder">01-cpp-fundamentals/22-first-look-string-vector</p><h3>What is it?</h3>
+<ul>
+<li><strong><code>std::string</code></strong> (<code>&lt;string&gt;</code>): a sequence of characters.</li>
+<li><strong><code>std::vector&lt;T&gt;</code></strong> (<code>&lt;vector&gt;</code>): a sequence of values of type <code>T</code> that can grow.</li>
+</ul>
+<p>Both are Standard Library class types that know their size, grow when needed, and
+release their memory automatically at the end of their scope.</p>
+<h3>Why does it matter?</h3>
+<p>They replace fixed-size C arrays and character arrays, which cannot grow and do not
+know their own size. They are the default choice for text and lists in modern C++.</p>
+<h3>Basic operations</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>Example</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>size</td>
+<td><code>city.size()</code></td>
+<td>4 for <code>"Pune"</code></td>
+</tr>
+<tr>
+<td>element by index</td>
+<td><code>city[0]</code></td>
+<td><code>'P'</code></td>
+</tr>
+<tr>
+<td>last element</td>
+<td><code>city.back()</code></td>
+<td><code>'e'</code></td>
+</tr>
+<tr>
+<td>join strings</td>
+<td><code>city + ", India"</code></td>
+<td><code>"Pune, India"</code></td>
+</tr>
+<tr>
+<td>add to a vector</td>
+<td><code>temps.push_back(33)</code></td>
+<td>size 3 becomes 4</td>
+</tr>
+<tr>
+<td>first / last</td>
+<td><code>temps.front()</code>, <code>temps.back()</code></td>
+<td>28, 33</td>
+</tr>
+<tr>
+<td>checked access</td>
+<td><code>temps.at(1)</code></td>
+<td>31</td>
+</tr>
+</tbody>
+</table></div>
+<p>Valid indexes run from <code>0</code> to <code>size() - 1</code>.</p>
+<h3>Out of bounds: three builds</h3>
+<p>Reading index 10 from a 3-element vector (tested with GCC 13):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Access</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v[10]</code>, <code>cxx</code></td>
+<td>printed 0, exit code 0: silent undefined behavior</td>
+</tr>
+<tr>
+<td><code>v[10]</code>, <code>cxx -D_GLIBCXX_ASSERTIONS</code></td>
+<td><code>Assertion '__n &lt; this-&gt;size()' failed</code>, aborted</td>
+</tr>
+<tr>
+<td><code>v.at(10)</code>, <code>cxx</code></td>
+<td><code>std::out_of_range</code>: <code>__n (which is 10) &gt;= this-&gt;size() (which is 3)</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>Use <code>.at()</code> when the index comes from outside the program, and build tests with
+<code>-D_GLIBCXX_ASSERTIONS</code>.</p>
+<h3>Parentheses vs braces</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>std::vector&lt;int&gt; a(4);</code></td>
+<td>4 elements, all 0</td>
+</tr>
+<tr>
+<td><code>std::vector&lt;int&gt; b{4};</code></td>
+<td>1 element: 4</td>
+</tr>
+<tr>
+<td><code>std::string s1(3, 'x');</code></td>
+<td><code>"xxx"</code>, size 3</td>
+</tr>
+<tr>
+<td><code>std::string s2{3, 'x'};</code></td>
+<td>size 2: <code>char(3)</code> and <code>'x'</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>For "N copies of a value", use parentheses.</p>
+<h3>size() vs sizeof</h3>
+<p><code>sizeof(std::string)</code> is 32 and <code>sizeof(std::vector&lt;int&gt;)</code> is 24 on this platform,
+whatever they hold: the object stores bookkeeping, and the elements usually live in
+separately allocated memory. Use <code>size()</code> for the number of elements.</p>
+<h3>Example output</h3>
+<pre><code class="language-text">Pune, size 4, first 'P', last 'e'
+Pune, India, size 11
+joined: C++
+temps: size 4, front 28, back 33, temps[1] 31, temps.at(1) 31
+a(4): size 4, a[0] 0
+b{4}: size 1, b[0] 4
+s1(3, 'x'): size 3, s2{3, 'x'}: size 2
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v[v.size()]</code></td>
+<td>Undefined behavior, often silent</td>
+<td>Last index is <code>size() - 1</code>; use <code>.at()</code></td>
+</tr>
+<tr>
+<td><code>std::vector&lt;int&gt; v{3};</code> for 3 zeros</td>
+<td>One element, 3</td>
+<td><code>std::vector&lt;int&gt; v(3);</code></td>
+</tr>
+<tr>
+<td><code>"C" + "++"</code></td>
+<td>Error: two <code>const char</code> arrays</td>
+<td><code>std::string{"C"} + "++"</code></td>
+</tr>
+<tr>
+<td><code>std::cin &gt;&gt; name</code> for a full name</td>
+<td>Stops at the first space</td>
+<td><code>std::getline</code> (Stage 04)</td>
+</tr>
+<tr>
+<td><code>sizeof(name)</code> as the length</td>
+<td>Object size, not text length</td>
+<td><code>name.size()</code></td>
+</tr>
+<tr>
+<td>Missing <code>#include &lt;string&gt;</code></td>
+<td>Compiles by accident on some libraries</td>
+<td>Include what you use</td>
+</tr>
+</tbody>
+</table></div>
+<h3>UB watch</h3>
+<p><code>[]</code> with an invalid index is undefined behavior. A normal build can print a
+believable value and exit successfully.</p>
+<h3>Key takeaway</h3>
+<p>Use <code>std::string</code> and <code>std::vector</code> by default, index from 0 to <code>size() - 1</code>, and
+let <code>.at()</code> or <code>-D_GLIBCXX_ASSERTIONS</code> catch bad indexes.</p>
+<h3>Standard</h3>
+<p>C++23.</p></section><section class="topic" id="t23"><h2><span class="num">23</span>Reading compiler errors and warnings</h2><p class="folder">01-cpp-fundamentals/23-compiler-errors-and-warnings</p><h3>What is it?</h3>
+<p>A <strong>diagnostic</strong> is a message from the compiler about your code.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Kind</th>
+<th>Meaning</th>
+<th>Builds?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>error</td>
+<td>not valid C++</td>
+<td>no</td>
+</tr>
+<tr>
+<td>warning</td>
+<td>valid C++, but probably a bug</td>
+<td>yes, and the bug ships</td>
+</tr>
+<tr>
+<td>note</td>
+<td>extra context, often containing the fix</td>
+<td>n/a</td>
+</tr>
+<tr>
+<td>linker error</td>
+<td>compiling worked, but the pieces don't connect</td>
+<td>no</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Anatomy of a diagnostic</h3>
+<pre><code class="language-text">typo.cpp:5:18: error: 'cont' was not declared in this scope; did you mean 'count'?
+    5 |     std::cout &lt;&lt; cont &lt;&lt; '\n';
+      |                  ^~~~
+      |                  count
+</code></pre>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>typo.cpp:5:18</code></td>
+<td>file : line : column</td>
+</tr>
+<tr>
+<td><code>error:</code></td>
+<td>the kind</td>
+</tr>
+<tr>
+<td><code>did you mean …?</code></td>
+<td>a suggestion, not always right</td>
+</tr>
+<tr>
+<td><code>^~~~</code></td>
+<td>the caret: the exact characters</td>
+</tr>
+<tr>
+<td><code>count</code> under the caret</td>
+<td>a fix-it hint</td>
+</tr>
+</tbody>
+</table></div>
+<h3>The method</h3>
+<ol>
+<li>Read the <strong>first</strong> error first; later errors are often caused by it.</li>
+<li>Location, then message, then caret.</li>
+<li>If the reported line looks fine, check the line <strong>before</strong> it.</li>
+<li>Read the notes: they often contain the fix.</li>
+<li>Treat suggestions as hints.</li>
+<li>Rebuild after each fix.</li>
+<li>Aim for zero warnings.</li>
+</ol>
+<h3>Debug log: the broken program</h3>
+<p>Built with <code>cxx</code> after each single fix:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Build</th>
+<th>Fix applied</th>
+<th>Errors</th>
+<th>Warnings</th>
+<th>What changed</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>(none)</td>
+<td>3</td>
+<td>3</td>
+<td><code>;</code> reported on line 6; <code>count</code> not declared</td>
+</tr>
+<tr>
+<td>2</td>
+<td>add <code>;</code> after <code>int total{10}</code></td>
+<td>1</td>
+<td>3</td>
+<td>the <code>count</code> error vanished: it was a cascade</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>totl</code> → <code>total</code></td>
+<td>0</td>
+<td>2</td>
+<td>"unused variable 'total'" vanished: same root cause</td>
+</tr>
+<tr>
+<td>4</td>
+<td>signed <code>limit</code>, remove <code>unused</code></td>
+<td>0</td>
+<td>0</td>
+<td>clean</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two lessons from the log:</p>
+<ul>
+<li>One missing <code>;</code> caused two errors: <code>int count{2};</code> was swallowed into the broken
+  statement, so <code>count</code> was never declared.</li>
+<li>One typo caused an error <strong>and</strong> a warning: with <code>totl</code>, the real <code>total</code> was
+  never used.</li>
+</ul>
+<h3>Other diagnostics</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>missing <code>;</code> on line 3</td>
+<td><code>error: expected ',' or ';' before 'return'</code> on line 4</td>
+</tr>
+<tr>
+<td><code>std::strng</code></td>
+<td><code>did you mean 'string'?</code>, then <code>'name' was not declared; did you mean 'tzname'?</code> (wrong suggestion)</td>
+</tr>
+<tr>
+<td>missing <code>#include &lt;iostream&gt;</code></td>
+<td>note: <code>did you forget to '#include &lt;iostream&gt;'?</code> with <code>+++ \|+#include &lt;iostream&gt;</code></td>
+</tr>
+<tr>
+<td><code>int mian()</code> instead of <code>main</code></td>
+<td><code>undefined reference to 'main'</code> / <code>collect2: error: ld returned 1 exit status</code></td>
+</tr>
+<tr>
+<td>warnings with <code>-Werror</code></td>
+<td><code>[-Werror=sign-compare]</code> … <code>all warnings being treated as errors</code>, no executable</td>
+</tr>
+</tbody>
+</table></div>
+<p>A linker error has no file or line: compilation succeeded, and the linker could
+not find something it needed.</p>
+<h3>Flags</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>-Wall -Wextra</code></td>
+<td>the main warning sets</td>
+</tr>
+<tr>
+<td><code>-Wpedantic</code></td>
+<td>warn about non-standard extensions</td>
+</tr>
+<tr>
+<td><code>-Wshadow=local</code></td>
+<td>a local hiding another local</td>
+</tr>
+<tr>
+<td><code>-Wconversion</code></td>
+<td>lossy implicit conversions</td>
+</tr>
+<tr>
+<td><code>-Werror</code></td>
+<td>warnings become errors</td>
+</tr>
+<tr>
+<td><code>-fmax-errors=1</code></td>
+<td>stop after the first error</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Stale binaries</h3>
+<p>A failed build does not delete the old executable. To test that a build really
+fails:</p>
+<pre><code class="language-bash">rm -f main
+cxx -Werror main.cpp -o main
+ls main          # No such file or directory
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fixing the last error first</td>
+<td>Start at the top</td>
+</tr>
+<tr>
+<td>Staring at the reported line</td>
+<td>Check the line before it</td>
+</tr>
+<tr>
+<td>Ignoring warnings because it builds</td>
+<td>Treat them as bugs; use <code>-Werror</code> in CI</td>
+</tr>
+<tr>
+<td>Trusting every suggestion</td>
+<td><code>tzname</code> was wrong</td>
+</tr>
+<tr>
+<td>Reading a linker error as syntax</td>
+<td><code>ld returned 1</code> means a missing piece</td>
+</tr>
+<tr>
+<td>Opening <code>main</code> in the editor</td>
+<td>That's the binary; edit <code>main.cpp</code></td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>Read the first error first, check the line above, read the notes, and keep the
+build at zero warnings.</p>
+<h3>Standard</h3>
+<p>C++23. Diagnostics shown are from GCC 13.</p></section><section class="topic" id="t24"><h2><span class="num">24</span>Undefined behavior red-flag primer</h2><p class="folder">01-cpp-fundamentals/24-undefined-behavior-primer</p><h3>What is it?</h3>
+<p><strong>Undefined behavior (UB)</strong> is code for which the C++ standard places <strong>no
+requirements</strong> on what happens: a plausible value, a crash, different results at
+different optimization levels, or code that seems to work for years.</p>
+<h3>Why does it exist?</h3>
+<p>For speed and portability: C++ does not check every addition or index. The
+programmer promises the program never does these things, and the compiler is
+allowed to rely on that promise.</p>
+<h3>The five Stage 01 red flags</h3>
+<p>Each one tested with three builds (GCC 13); <code>cxxt</code> combines all the tools.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Red flag</th>
+<th><code>cxx</code></th>
+<th>UBSan + float-cast-overflow</th>
+<th><code>-D_GLIBCXX_ASSERTIONS</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>int count;</code> then read it</td>
+<td><strong>warning: used uninitialized</strong></td>
+<td>silent (printed 29538)</td>
+<td>warning only</td>
+</tr>
+<tr>
+<td><code>big + 1</code> (int)</td>
+<td>silent, -2147483648</td>
+<td><strong>signed integer overflow</strong></td>
+<td>silent</td>
+</tr>
+<tr>
+<td><code>10 / divisor</code> (0)</td>
+<td>crash</td>
+<td><strong>division by zero</strong>, then crash</td>
+<td>crash</td>
+</tr>
+<tr>
+<td><code>static_cast&lt;int&gt;(1e20)</code></td>
+<td>silent, -2147483648</td>
+<td><strong>1e+20 is outside the range of representable values of type 'int'</strong></td>
+<td>silent</td>
+</tr>
+<tr>
+<td><code>values[3]</code> on 3 elements</td>
+<td>silent, printed 0</td>
+<td>silent</td>
+<td><strong>Assertion '__n &lt; this-&gt;size()' failed</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p>No single tool caught everything. One crash (the division) also hid the next two
+red flags until that line was commented out.</p>
+<h3>The surprise: same question, two answers</h3>
+<p>With input <code>2147483647</code>:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Result</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x + 1 &gt; x</code></td>
+<td>true</td>
+<td>the compiler assumed no overflow and replaced it with <code>true</code></td>
+</tr>
+<tr>
+<td><code>const int next{x + 1}; next &gt; x</code></td>
+<td>false</td>
+<td>the addition ran and wrapped to -2147483648</td>
+</tr>
+</tbody>
+</table></div>
+<p>UBSan reported only the second: in the first, the compiler had removed the
+addition, so there was nothing left to check at run time. <strong>A sanitizer checks
+the program the compiler built, not the code you wrote.</strong></p>
+<h3>The fixes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Red flag</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uninitialized read</td>
+<td><code>int count{};</code></td>
+</tr>
+<tr>
+<td>signed overflow</td>
+<td><code>long long</code> (not <code>long</code>: it is 4 bytes on 64-bit Windows)</td>
+</tr>
+<tr>
+<td>division by zero</td>
+<td>check <code>divisor != 0</code> <strong>before</strong> dividing</td>
+</tr>
+<tr>
+<td>float to int</td>
+<td>check the range with <code>std::numeric_limits&lt;int&gt;</code> first</td>
+</tr>
+<tr>
+<td>out of bounds</td>
+<td>a valid index, or <code>.at()</code> to report a bad one</td>
+</tr>
+</tbody>
+</table></div>
+<p>A fix must <strong>handle</strong> the dangerous case, not remove the operation:
+<code>static_cast&lt;double&gt;(huge)</code> "fixes" nothing, because it no longer converts to
+<code>int</code> at all.</p>
+<h3>Test alias</h3>
+<pre><code class="language-bash">alias cxxt='g++ -Wall -Wextra -Wpedantic -Wshadow=local -std=c++23 -g -fsanitize=undefined,float-cast-overflow -D_GLIBCXX_ASSERTIONS'
+</code></pre>
+<p><code>cxx</code> for everyday builds, <code>cxxt</code> for test builds.</p>
+<h3>Example output</h3>
+<p>Built with <code>cxxt</code>: no warnings, no runtime errors.</p>
+<pre><code class="language-text">count:      0
+big + 1:    2147483648
+10 / divisor: refused, divisor is 0
+huge as int: refused, 1e+20 does not fit int
+last value: 3
+</code></pre>
+<h3>Common mistakes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Mistake</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"It printed the right answer"</td>
+<td>UB can change with any compiler or flag</td>
+</tr>
+<tr>
+<td>Relying on signed overflow wrapping</td>
+<td>It can be optimized away entirely</td>
+</tr>
+<tr>
+<td>Trusting one tool</td>
+<td>Zero warnings <strong>and</strong> sanitizer test builds</td>
+</tr>
+<tr>
+<td>Checking overflow after it happened</td>
+<td>Compare before the operation</td>
+</tr>
+<tr>
+<td>"Fixing" UB by removing the operation</td>
+<td>Guard it so the program still does its job</td>
+</tr>
+</tbody>
+</table></div>
+<h3>Key takeaway</h3>
+<p>UB is a broken promise to the compiler. Catch it with warnings, sanitizers, and
+library assertions together, and fix it by guarding the dangerous case.</p>
+<h3>Standard</h3>
+<p>C++23. Formal UB, implementation-defined, and unspecified behavior: Stage 15.</p></section>
+<section class="topic" id="summary"><h2>Stage summary</h2><div class="table-wrap"><table><tr><th>#</th><th>Topic</th><th>Key takeaway</th></tr><tr><td>01</td><td>What C++ is and why it exists</td><td>C++ gives you control and performance, and in return asks you to be precise.</td></tr><tr><td>02</td><td>C++ compared with C and higher-level languages</td><td>C++ keeps C&#x27;s performance and adds abstractions that cost nothing at run time. The price is responsibility: the language trusts you more than higher-level ones do.</td></tr><tr><td>03</td><td>C++ compilation pipeline</td><td>`g++ main.cpp -o main` runs all four steps at once; knowing them tells you which step failed.</td></tr><tr><td>04</td><td>First C++ program</td><td>Every program is source code, built into an executable, then run.</td></tr><tr><td>05</td><td>main()</td><td>`main` is where execution starts, and its return value tells the operating system whether the program succeeded.</td></tr><tr><td>06</td><td>#include</td><td>`#include` is textual copying by the preprocessor. Include every header you use.</td></tr><tr><td>07</td><td>Namespaces and std::</td><td>Write `std::` explicitly. It costs a few characters and prevents name collisions.</td></tr><tr><td>08</td><td>std::cout, std::cerr, and std::cin</td><td>Results to `std::cout`, errors to `std::cerr`, input from `std::cin`.</td></tr><tr><td>09</td><td>Comments</td><td>Code says what. Comments say why.</td></tr><tr><td>10</td><td>Variables and initialization</td><td>Initialize every variable when you define it, and prefer brace initialization.</td></tr><tr><td>11</td><td>Fundamental data types</td><td>The type gives the bits their meaning. Know which sizes the standard guarantees and which are only true on your platform.</td></tr><tr><td>12</td><td>Integer and floating-point types</td><td>Integers are exact within a range; floating-point values are approximate within a precision. Pick the type whose range and precision fit the value.</td></tr><tr><td>13</td><td>char, bool, and void</td><td>`char` stores numbers, `bool` stores yes or no, and `void` stores nothing. Use `unsigned char` for raw bytes, because plain `char` signedness depends on the platform.</td></tr><tr><td>14</td><td>Literals</td><td>Every literal has a type. The way you write it (digits, prefix, suffix, quotes) decides which.</td></tr><tr><td>15</td><td>Assignment</td><td>Initialization creates an object with a value; assignment replaces the value of an existing object. Plain `=` narrows silently, so use braces or `-Wconversion`.</td></tr><tr><td>16</td><td>const</td><td>`const` objects are initialized once and never changed. Make values `const` unless they need to change.</td></tr><tr><td>17</td><td>Type inference with auto</td><td>`auto` copies the initializer&#x27;s type exactly, once, at compile time. Use it for clarity, not to avoid thinking about types.</td></tr><tr><td>18</td><td>Arithmetic, comparison, and logical operators</td><td>The operands decide the calculation, `&amp;&amp;` and `||` stop early, and UBSan finds the undefined behavior that normal builds hide.</td></tr><tr><td>19</td><td>Type conversions and static_cast</td><td>`static_cast` makes a conversion explicit, not safe. Cast operands, guard signedness, and know which sanitizer checks are enabled.</td></tr><tr><td>20</td><td>Block scope</td><td>A name lives from its definition to its block&#x27;s closing brace. Keep scopes small, and let the compiler report shadowing.</td></tr><tr><td>21</td><td>Reading input with std::cin</td><td>A failed stream skips everything until `clear()`, and only the stream state, not the value, tells you whether a read worked.</td></tr><tr><td>22</td><td>A first look at std::string and std::vector</td><td>Use `std::string` and `std::vector` by default, index from 0 to `size() - 1`, and let `.at()` or `-D_GLIBCXX_ASSERTIONS` catch bad indexes.</td></tr><tr><td>23</td><td>Reading compiler errors and warnings</td><td>Read the first error first, check the line above, read the notes, and keep the build at zero warnings.</td></tr><tr><td>24</td><td>Undefined behavior red-flag primer</td><td>UB is a broken promise to the compiler. Catch it with warnings, sanitizers, and library assertions together, and fix it by guarding the dangerous case.</td></tr></table></div></section>
+<section class="topic" id="selftest"><h2>Self-test</h2><p>Answer out loud before opening each answer.</p><details><summary>1. Why does a missing ; get reported on the next line?</summary><p>The compiler only notices the statement didn&#x27;t end when it reaches the next token.</p></details><details><summary>2. Why is int x{3.9}; an error but int x = 3.9; not?</summary><p>Braces reject narrowing conversions; = converts silently.</p></details><details><summary>3. What decides the type of auto x{3000000000};?</summary><p>The literal&#x27;s type: it doesn&#x27;t fit int, so it is long; auto copies it.</p></details><details><summary>4. Why is -1 &lt; 0u false?</summary><p>Signed meets unsigned: -1 is converted to a huge unsigned value.</p></details><details><summary>5. Why is 7 / 2 equal to 3?</summary><p>Both operands are int, so integer division drops the fraction.</p></details><details><summary>6. What does a failed std::cin read do to later reads?</summary><p>They are all skipped until clear() is called.</p></details><details><summary>7. Why must clear() come before ignore()?</summary><p>A failed stream skips every input operation, ignore() included.</p></details><details><summary>8. Why can v[10] on 3 elements print 0 and exit successfully?</summary><p>Out-of-bounds [] is undefined behavior; nothing is required to fail.</p></details><details><summary>9. Which tool catches an uninitialized read: warnings or UBSan?</summary><p>The compiler warning; UBSan did not report it.</p></details><details><summary>10. Why did UBSan miss x + 1 &gt; x?</summary><p>The compiler folded it to true, so no addition remained to check.</p></details><details><summary>11. const or constexpr: which means compile-time?</summary><p>constexpr. const only means not modifiable after initialization.</p></details><details><summary>12. What is the fix for silent signed/unsigned comparison bugs?</summary><p>Match signedness, or guard the negative case before converting.</p></details></section>
+<footer><p>C++ From Zero to Advanced · Stage 01 theory reference. Code for each topic: <code>01-cpp-fundamentals/&lt;topic&gt;/main.cpp</code>.</p></footer>
+</main></div><script>
+(function () {
+  var btn = document.getElementById('themeBtn');
+  var root = document.documentElement;
+  try {
+    var saved = localStorage.getItem('theory-theme');
+    if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+  } catch (e) {}
+  btn.addEventListener('click', function () {
+    var current = root.getAttribute('data-theme');
+    if (!current) {
+      current = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    var next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theory-theme', next); } catch (e) {}
+  });
+})();
+</script></body></html>
